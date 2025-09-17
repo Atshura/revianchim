@@ -72,6 +72,7 @@
             position: relative; width: 280px; height: 180px;
             cursor: pointer; overflow: hidden;
             border-radius: 10px; z-index: 1;
+            transition: filter 0.3s ease;
         }
         .envelope-back, .envelope-flap, .envelope-front-label, .letter, .lock-icon {
             position: absolute; width: 100%; height: 100%;
@@ -107,7 +108,6 @@
         .envelope.open .letter { transform: translateY(0%); }
         .envelope.open .envelope-front-label { opacity: 0; }
         
-        /* === FITUR BARU: GEMBOK & POPUP === */
         .envelope.locked {
             cursor: not-allowed;
             filter: grayscale(40%);
@@ -162,7 +162,8 @@
                 <div class="envelope-flap"></div>
                 <div class="envelope-front-label">Foto</div>
             </div>
-             <div class="envelope" id="ucapanEnvelope">
+            <div class="envelope locked" id="ucapanEnvelope">
+                <div class="lock-icon">❤️</div>
                 <div class="envelope-back"></div>
                 <div class="letter">
                     <div class="letter-content">Untaian Doa Terbaik</div>
@@ -177,7 +178,7 @@
     
     <div id="popup" class="hidden">
         <div class="popup-content">
-            <p>Buka video dulu Bu ❤️</p>
+            <p id="popup-text"></p>
             <button id="closePopup">OK</button>
         </div>
     </div>
@@ -187,61 +188,69 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // --- Elemen-elemen yang dibutuhkan ---
             const preloader = document.querySelector('.preloader');
             const body = document.querySelector('body');
             const envelopes = document.querySelectorAll('.envelope');
             const videoEnvelope = document.getElementById('videoEnvelope');
             const fotoEnvelope = document.getElementById('fotoEnvelope');
+            const ucapanEnvelope = document.getElementById('ucapanEnvelope');
             const popup = document.getElementById('popup');
+            const popupText = document.getElementById('popup-text');
             const closePopup = document.getElementById('closePopup');
             const trumpetSound = document.getElementById('trumpet-sound');
             const birthdaySong = document.getElementById('birthday-song');
-            let soundsPlayed = false; // Penanda agar suara hanya main sekali
+            let soundsPlayed = false;
 
-            // --- Logika Preloader ---
             setTimeout(() => {
                 preloader.classList.add('loaded');
                 body.classList.add('loaded');
                 body.style.overflow = 'auto';
             }, 1500);
 
-            // --- Logika untuk semua Amplop ---
             envelopes.forEach(envelope => {
                 envelope.addEventListener('click', (event) => {
-                    if (event.target.closest('a')) return;
+                    if (event.target.closest('a') || envelope.classList.contains('open')) {
+                        return; // Hentikan jika link diklik atau amplop sudah terbuka
+                    }
 
-                    // 1. Cek jika amplop foto yang terkunci diklik
                     if (envelope.id === 'fotoEnvelope' && envelope.classList.contains('locked')) {
+                        popupText.textContent = 'Buka video dulu Bu ❤️';
                         popup.classList.remove('hidden');
-                        return; // Hentikan aksi
+                        return;
                     }
                     
-                    // 2. Buka/tutup amplop yang diklik
-                    envelope.classList.toggle('open');
+                    if (envelope.id === 'ucapanEnvelope' && envelope.classList.contains('locked')) {
+                        popupText.textContent = 'Buka foto dulu Bu ❤️';
+                        popup.classList.remove('hidden');
+                        return;
+                    }
                     
-                    // 3. Jika amplop video dibuka, buka gembok amplop foto
-                    if (envelope.id === 'videoEnvelope' && envelope.classList.contains('open')) {
-                        fotoEnvelope.classList.remove('locked');
+                    envelope.classList.add('open'); // Hanya bisa dibuka sekali
+                    
+                    if (envelope.id === 'videoEnvelope') {
+                        fotoEnvelope.classList.remove('locked'); // Buka gembok foto
+                    }
+                    
+                    if (envelope.id === 'fotoEnvelope') {
+                        ucapanEnvelope.classList.remove('locked'); // Buka gembok ucapan
                     }
 
-                    // 4. Cek apakah sudah waktunya mainkan audio
                     checkAndPlayAudio();
                 });
             });
 
-            // --- Logika Tombol Tutup Popup ---
             closePopup.addEventListener('click', () => {
                 popup.classList.add('hidden');
             });
             
-            // --- Fungsi untuk memutar audio ---
             function checkAndPlayAudio() {
-                // Syarat: video & foto sudah dibuka, dan suara belum pernah dimainkan
-                if (videoEnvelope.classList.contains('open') && fotoEnvelope.classList.contains('open') && !soundsPlayed) {
-                    soundsPlayed = true; // Set penanda jadi true
-                    trumpetSound.play(); // Mainkan terompet
-                    // Setelah terompet selesai, mainkan lagu
+                if (videoEnvelope.classList.contains('open') && 
+                    fotoEnvelope.classList.contains('open') && 
+                    ucapanEnvelope.classList.contains('open') && 
+                    !soundsPlayed) 
+                {
+                    soundsPlayed = true;
+                    trumpetSound.play();
                     trumpetSound.addEventListener('ended', () => {
                         birthdaySong.play();
                     });
