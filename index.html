@@ -106,7 +106,10 @@
         }
         .envelope.open .envelope-flap { transform: rotateX(180deg); }
         .envelope.open .letter { transform: translateY(0%); }
-        .envelope.open .envelope-front-label { opacity: 0; }
+        .envelope.open .envelope-front-label {
+            opacity: 0;
+            pointer-events: none; /* <-- Tambahkan baris ini */
+        }
         
         .envelope.locked {
             cursor: not-allowed;
