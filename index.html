@@ -12,6 +12,7 @@
             font-family: 'Montserrat', sans-serif;
             overflow: hidden;
         }
+        body.modal-open { overflow: hidden; }
         .preloader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: #c0e399; z-index: 9999; display: flex;
@@ -42,8 +43,7 @@
         }
         body.loaded .main-container { opacity: 1; }
         .top-section {
-            background-color: #c0e399;
-            padding: 40px 20px 30px 20px; text-align: center;
+            background-color: #c0e399; padding: 40px 20px 30px 20px; text-align: center;
         }
         .main-title {
             font-family: 'Dancing Script', cursive; font-size: 3.5em;
@@ -59,15 +59,10 @@
             justify-content: center; padding: 20px; gap: 20px;
         }
         .content-section::before {
-            content: ''; position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 150px; background-color: #c0e399;
-            z-index: 0;
+            content: ''; position: absolute; top: 0; left: 0; right: 0;
+            height: 150px; background-color: #c0e399; z-index: 0;
         }
-        .bottom-section {
-            background-color: #c0e399;
-            min-height: 8%;
-        }
+        .bottom-section { background-color: #c0e399; min-height: 8%; }
         .envelope {
             position: relative; width: 280px; height: 180px;
             cursor: pointer; overflow: hidden;
@@ -87,7 +82,7 @@
         .envelope-front-label {
             display: flex; justify-content: center; align-items: center;
             color: #333; font-size: 1.8em; font-weight: 600;
-            transition: opacity 0.3s ease; z-index: 4;
+            transition: opacity 0.3s ease; z-index: 4; pointer-events: none;
         }
         .letter {
             top: 0; width: 95%; height: 95%; margin: 2.5%;
@@ -106,15 +101,9 @@
         }
         .envelope.open .envelope-flap { transform: rotateX(180deg); }
         .envelope.open .letter { transform: translateY(0%); }
-        .envelope.open .envelope-front-label {
-            opacity: 0;
-            pointer-events: none; /* <-- Tambahkan baris ini */
-        }
+        .envelope.open .envelope-front-label { opacity: 0; }
         
-        .envelope.locked {
-            cursor: not-allowed;
-            filter: grayscale(40%);
-        }
+        .envelope.locked { cursor: not-allowed; filter: grayscale(40%); }
         .lock-icon {
             display: none; justify-content: center; align-items: center;
             font-size: 4em; color: rgba(255, 255, 255, 0.8);
@@ -136,6 +125,58 @@
             background-color: #f5b9cd; border: none; padding: 10px 30px;
             border-radius: 20px; font-size: 1em; cursor: pointer;
         }
+
+        /* === GAYA UNTUK MODAL/POP-UP BARU === */
+        .modal-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); z-index: 10001;
+            display: flex; justify-content: center; align-items: center;
+            padding: 20px;
+        }
+        .modal-container.hidden { display: none; }
+        .modal-content {
+            background: white; border-radius: 15px;
+            width: 100%; max-width: 800px;
+            height: 85%; max-height: 600px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex; flex-direction: column;
+            transform: scale(0.7); opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+        }
+        .modal-container:not(.hidden) .modal-content {
+            transform: scale(1); opacity: 1;
+        }
+        #modal-body {
+            padding: 20px; flex-grow: 1;
+            overflow-y: auto;
+        }
+        .modal-footer {
+            padding: 15px; text-align: center;
+            border-top: 1px solid #eee;
+        }
+        .modal-close-button {
+            background-color: #f5b9cd; border: none; padding: 10px 30px;
+            border-radius: 20px; font-size: 1em; cursor: pointer;
+        }
+        /* Style untuk galeri di dalam modal */
+        #modal-body .galeri-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        #modal-body .galeri-container img {
+            width: 100%; height: auto; border-radius: 8px;
+        }
+        /* Style untuk ucapan di dalam modal */
+        #modal-body .ucapan-content {
+            text-align: center; padding-top: 20px;
+        }
+        #modal-body .ucapan-content h2 {
+            font-family: 'Dancing Script', cursive; font-size: 2.5em; margin-bottom: 20px;
+        }
+        #modal-body .ucapan-content p {
+            font-size: 1.1em; line-height: 1.6;
+        }
     </style>
 </head>
 <body>
@@ -150,7 +191,7 @@
                 <div class="envelope-back"></div>
                 <div class="letter">
                     <div class="letter-content">Untaian Doa Terbaik</div>
-                    <a href="ucapan.html"><button class="action-button">Baca Ucapan</button></a>
+                    <button class="action-button" id="open-greeting-btn">Baca Ucapan</button>
                 </div>
                 <div class="envelope-flap"></div>
                 <div class="envelope-front-label">Ucapan</div>
@@ -160,7 +201,7 @@
                 <div class="envelope-back"></div>
                 <div class="letter">
                     <div class="letter-content">Kenangan Kita</div>
-                    <a href="galeri.html"><button class="action-button">Lihat Foto</button></a>
+                    <button class="action-button" id="open-gallery-btn">Lihat Foto</button>
                 </div>
                 <div class="envelope-flap"></div>
                 <div class="envelope-front-label">Foto</div>
@@ -186,13 +227,38 @@
         </div>
     </div>
 
+    <div id="gallery-content" style="display: none;">
+        <div class="galeri-container">
+            <img src="kenangan1.jpg" alt="Foto 1">
+            <img src="foto2.jpg" alt="Foto 2">
+            <img src="foto3.jpg" alt="Foto 3">
+            <img src="foto4.jpg" alt="Foto 4">
+            </div>
+    </div>
+    <div id="greeting-content" style="display: none;">
+        <div class="ucapan-content">
+            <h2>Doa Terbaik Untukmu, Bu...</h2>
+            <p>Selamat ulang tahun, Ibu. Semoga panjang umur, sehat selalu, dan senantiasa berada dalam lindungan-Nya. Terima kasih atas segala cinta dan pengorbanan yang tak pernah putus.</p>
+        </div>
+    </div>
+    
+    <div id="content-modal" class="modal-container hidden">
+        <div class="modal-content">
+            <div id="modal-body">
+                </div>
+            <div class="modal-footer">
+                <button id="close-modal-btn" class="modal-close-button">Kembali</button>
+            </div>
+        </div>
+    </div>
+
     <audio id="trumpet-sound" src="trumpet.mp3" preload="auto"></audio>
     <audio id="birthday-song" src="song.mp3" preload="auto"></audio>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const preloader = document.querySelector('.preloader');
             const body = document.querySelector('body');
+            const preloader = document.querySelector('.preloader');
             const envelopes = document.querySelectorAll('.envelope');
             const videoEnvelope = document.getElementById('videoEnvelope');
             const fotoEnvelope = document.getElementById('fotoEnvelope');
@@ -200,67 +266,68 @@
             const popup = document.getElementById('popup');
             const popupText = document.getElementById('popup-text');
             const closePopup = document.getElementById('closePopup');
+            
+            // Elemen Modal Baru
+            const contentModal = document.getElementById('content-modal');
+            const modalBody = document.getElementById('modal-body');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const openGalleryBtn = document.getElementById('open-gallery-btn');
+            const openGreetingBtn = document.getElementById('open-greeting-btn');
+            const galleryContent = document.getElementById('gallery-content');
+            const greetingContent = document.getElementById('greeting-content');
+
+            // Audio
             const trumpetSound = document.getElementById('trumpet-sound');
             const birthdaySong = document.getElementById('birthday-song');
             let soundsPlayed = false;
 
-            setTimeout(() => {
-                preloader.classList.add('loaded');
-                body.classList.add('loaded');
-                body.style.overflow = 'auto';
-            }, 1500);
+            setTimeout(() => { preloader.classList.add('loaded'); body.classList.add('loaded'); }, 1500);
 
             envelopes.forEach(envelope => {
                 envelope.addEventListener('click', (event) => {
-                    if (event.target.closest('a') || envelope.classList.contains('open')) {
-                        return;
-                    }
-
-                    // --- LOGIKA KUNCI YANG BARU ---
+                    if (event.target.closest('button') || envelope.classList.contains('open')) return;
                     if (envelope.id === 'fotoEnvelope' && envelope.classList.contains('locked')) {
                         popupText.textContent = 'Buka ucapan dulu Bu ❤️';
-                        popup.classList.remove('hidden');
-                        return;
+                        popup.classList.remove('hidden'); return;
                     }
-                    
                     if (envelope.id === 'videoEnvelope' && envelope.classList.contains('locked')) {
                         popupText.textContent = 'Buka foto dulu Bu ❤️';
-                        popup.classList.remove('hidden');
-                        return;
+                        popup.classList.remove('hidden'); return;
                     }
-                    
                     envelope.classList.add('open');
-                    
-                    // --- LOGIKA MEMBUKA KUNCI YANG BARU ---
                     if (envelope.id === 'ucapanEnvelope') {
-                        fotoEnvelope.classList.remove('locked'); // Buka gembok foto
+                        fotoEnvelope.classList.remove('locked');
+                        if (!soundsPlayed) { // Mainkan audio saat amplop ucapan dibuka
+                            soundsPlayed = true;
+                            trumpetSound.play();
+                            trumpetSound.addEventListener('ended', () => { birthdaySong.play(); });
+                        }
                     }
-                    
                     if (envelope.id === 'fotoEnvelope') {
-                        videoEnvelope.classList.remove('locked'); // Buka gembok video
+                        videoEnvelope.classList.remove('locked');
                     }
-
-                    checkAndPlayAudio();
                 });
             });
 
-            closePopup.addEventListener('click', () => {
-                popup.classList.add('hidden');
-            });
-            
-            function checkAndPlayAudio() {
-                if (videoEnvelope.classList.contains('open') && 
-                    fotoEnvelope.classList.contains('open') && 
-                    ucapanEnvelope.classList.contains('open') && 
-                    !soundsPlayed) 
-                {
-                    soundsPlayed = true;
-                    trumpetSound.play();
-                    trumpetSound.addEventListener('ended', () => {
-                        birthdaySong.play();
-                    });
-                }
+            closePopup.addEventListener('click', () => popup.classList.add('hidden'));
+
+            // --- FUNGSI MODAL BARU ---
+            function openModal(content) {
+                modalBody.innerHTML = content;
+                contentModal.classList.remove('hidden');
+                body.classList.add('modal-open');
             }
+            function closeModal() {
+                contentModal.classList.add('hidden');
+                body.classList.remove('modal-open');
+            }
+
+            openGalleryBtn.addEventListener('click', (e) => { e.stopPropagation(); openModal(galleryContent.innerHTML); });
+            openGreetingBtn.addEventListener('click', (e) => { e.stopPropagation(); openModal(greetingContent.innerHTML); });
+            closeModalBtn.addEventListener('click', closeModal);
+            contentModal.addEventListener('click', (e) => {
+                if (e.target === contentModal) closeModal(); // Tutup jika klik di luar area putih
+            });
         });
     </script>
 </body>
