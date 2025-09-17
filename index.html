@@ -143,14 +143,14 @@
             <p class="sub-title">dari ayah, mas, adik</p>
         </div>
         <div class="content-section">
-            <div class="envelope" id="videoEnvelope">
+            <div class="envelope" id="ucapanEnvelope">
                 <div class="envelope-back"></div>
                 <div class="letter">
-                    <div class="letter-content">Sebuah Pesan Video</div>
-                    <a href="#" target="_blank"><button class="action-button">Lihat Video</button></a>
+                    <div class="letter-content">Untaian Doa Terbaik</div>
+                    <a href="ucapan.html"><button class="action-button">Baca Ucapan</button></a>
                 </div>
                 <div class="envelope-flap"></div>
-                <div class="envelope-front-label">Video</div>
+                <div class="envelope-front-label">Ucapan</div>
             </div>
             <div class="envelope locked" id="fotoEnvelope">
                 <div class="lock-icon">❤️</div>
@@ -162,15 +162,15 @@
                 <div class="envelope-flap"></div>
                 <div class="envelope-front-label">Foto</div>
             </div>
-            <div class="envelope locked" id="ucapanEnvelope">
+            <div class="envelope locked" id="videoEnvelope">
                 <div class="lock-icon">❤️</div>
                 <div class="envelope-back"></div>
                 <div class="letter">
-                    <div class="letter-content">Untaian Doa Terbaik</div>
-                    <a href="ucapan.html"><button class="action-button">Baca Ucapan</button></a>
+                    <div class="letter-content">Sebuah Pesan Video</div>
+                    <a href="#" target="_blank"><button class="action-button">Lihat Video</button></a>
                 </div>
                 <div class="envelope-flap"></div>
-                <div class="envelope-front-label">Ucapan</div>
+                <div class="envelope-front-label">Video</div>
             </div>
         </div>
         <div class="bottom-section"></div>
@@ -210,29 +210,31 @@
             envelopes.forEach(envelope => {
                 envelope.addEventListener('click', (event) => {
                     if (event.target.closest('a') || envelope.classList.contains('open')) {
-                        return; // Hentikan jika link diklik atau amplop sudah terbuka
+                        return;
                     }
 
+                    // --- LOGIKA KUNCI YANG BARU ---
                     if (envelope.id === 'fotoEnvelope' && envelope.classList.contains('locked')) {
-                        popupText.textContent = 'Buka video dulu Bu ❤️';
+                        popupText.textContent = 'Buka ucapan dulu Bu ❤️';
                         popup.classList.remove('hidden');
                         return;
                     }
                     
-                    if (envelope.id === 'ucapanEnvelope' && envelope.classList.contains('locked')) {
+                    if (envelope.id === 'videoEnvelope' && envelope.classList.contains('locked')) {
                         popupText.textContent = 'Buka foto dulu Bu ❤️';
                         popup.classList.remove('hidden');
                         return;
                     }
                     
-                    envelope.classList.add('open'); // Hanya bisa dibuka sekali
+                    envelope.classList.add('open');
                     
-                    if (envelope.id === 'videoEnvelope') {
+                    // --- LOGIKA MEMBUKA KUNCI YANG BARU ---
+                    if (envelope.id === 'ucapanEnvelope') {
                         fotoEnvelope.classList.remove('locked'); // Buka gembok foto
                     }
                     
                     if (envelope.id === 'fotoEnvelope') {
-                        ucapanEnvelope.classList.remove('locked'); // Buka gembok ucapan
+                        videoEnvelope.classList.remove('locked'); // Buka gembok video
                     }
 
                     checkAndPlayAudio();
