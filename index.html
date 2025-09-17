@@ -18,10 +18,7 @@
             justify-content: center; align-items: center;
             transition: opacity 1s ease, visibility 1s ease;
         }
-        .preloader.loaded {
-            opacity: 0;
-            visibility: hidden;
-        }
+        .preloader.loaded { opacity: 0; visibility: hidden; }
         .heart {
             width: 100px; height: 100px; background-color: #f7c9d9;
             position: relative; transform: rotate(-45deg);
@@ -59,7 +56,7 @@
         .content-section {
             flex-grow: 1; position: relative;
             display: flex; flex-direction: column; align-items: center;
-            justify-content: center; padding: 20px; gap: 25px;
+            justify-content: center; padding: 20px; gap: 20px;
         }
         .content-section::before {
             content: ''; position: absolute;
@@ -73,12 +70,10 @@
         }
         .envelope {
             position: relative; width: 280px; height: 180px;
-            cursor: pointer;
-            overflow: hidden; /* FIX UTAMA UNTUK BUG AMPLOP */
-            border-radius: 10px;
-            z-index: 1;
+            cursor: pointer; overflow: hidden;
+            border-radius: 10px; z-index: 1;
         }
-        .envelope-back, .envelope-flap, .envelope-front-label, .letter {
+        .envelope-back, .envelope-flap, .envelope-front-label, .letter, .lock-icon {
             position: absolute; width: 100%; height: 100%;
         }
         .envelope-back { background-color: #f7c9d9; }
@@ -111,12 +106,37 @@
         .envelope.open .envelope-flap { transform: rotateX(180deg); }
         .envelope.open .letter { transform: translateY(0%); }
         .envelope.open .envelope-front-label { opacity: 0; }
+        
+        /* === FITUR BARU: GEMBOK & POPUP === */
+        .envelope.locked {
+            cursor: not-allowed;
+            filter: grayscale(40%);
+        }
+        .lock-icon {
+            display: none; justify-content: center; align-items: center;
+            font-size: 4em; color: rgba(255, 255, 255, 0.8);
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3); z-index: 5;
+        }
+        .envelope.locked .lock-icon { display: flex; }
+        #popup {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 10000;
+            display: flex; justify-content: center; align-items: center;
+        }
+        #popup.hidden { display: none; }
+        .popup-content {
+            background: white; padding: 30px; border-radius: 10px;
+            text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .popup-content p { font-size: 1.2em; margin-bottom: 20px; }
+        #closePopup {
+            background-color: #f5b9cd; border: none; padding: 10px 30px;
+            border-radius: 20px; font-size: 1em; cursor: pointer;
+        }
     </style>
 </head>
 <body>
-    <div class="preloader">
-        <div class="heart"></div>
-    </div>
+    <div class="preloader"><div class="heart"></div></div>
     <div class="main-container">
         <div class="top-section">
             <h1 class="main-title">Untuk Ibu,</h1>
@@ -132,7 +152,8 @@
                 <div class="envelope-flap"></div>
                 <div class="envelope-front-label">Video</div>
             </div>
-            <div class="envelope" id="fotoEnvelope">
+            <div class="envelope locked" id="fotoEnvelope">
+                <div class="lock-icon">❤️</div>
                 <div class="envelope-back"></div>
                 <div class="letter">
                     <div class="letter-content">Kenangan Kita</div>
@@ -141,29 +162,91 @@
                 <div class="envelope-flap"></div>
                 <div class="envelope-front-label">Foto</div>
             </div>
+             <div class="envelope" id="ucapanEnvelope">
+                <div class="envelope-back"></div>
+                <div class="letter">
+                    <div class="letter-content">Untaian Doa Terbaik</div>
+                    <a href="ucapan.html"><button class="action-button">Baca Ucapan</button></a>
+                </div>
+                <div class="envelope-flap"></div>
+                <div class="envelope-front-label">Ucapan</div>
+            </div>
         </div>
         <div class="bottom-section"></div>
     </div>
+    
+    <div id="popup" class="hidden">
+        <div class="popup-content">
+            <p>Buka video dulu Bu ❤️</p>
+            <button id="closePopup">OK</button>
+        </div>
+    </div>
+
+    <audio id="trumpet-sound" src="trumpet.mp3" preload="auto"></audio>
+    <audio id="birthday-song" src="song.mp3" preload="auto"></audio>
+
     <script>
-        // PERBAIKAN: Menggunakan DOMContentLoaded agar tidak macet
         document.addEventListener('DOMContentLoaded', function() {
+            // --- Elemen-elemen yang dibutuhkan ---
             const preloader = document.querySelector('.preloader');
             const body = document.querySelector('body');
-            setTimeout(function() {
+            const envelopes = document.querySelectorAll('.envelope');
+            const videoEnvelope = document.getElementById('videoEnvelope');
+            const fotoEnvelope = document.getElementById('fotoEnvelope');
+            const popup = document.getElementById('popup');
+            const closePopup = document.getElementById('closePopup');
+            const trumpetSound = document.getElementById('trumpet-sound');
+            const birthdaySong = document.getElementById('birthday-song');
+            let soundsPlayed = false; // Penanda agar suara hanya main sekali
+
+            // --- Logika Preloader ---
+            setTimeout(() => {
                 preloader.classList.add('loaded');
                 body.classList.add('loaded');
                 body.style.overflow = 'auto';
             }, 1500);
-        });
-        // Logika untuk amplop
-        const envelopes = document.querySelectorAll('.envelope');
-        envelopes.forEach(envelope => {
-            envelope.addEventListener('click', (event) => {
-                if (event.target.closest('a')) {
-                    return;
-                }
-                envelope.classList.add('open');
+
+            // --- Logika untuk semua Amplop ---
+            envelopes.forEach(envelope => {
+                envelope.addEventListener('click', (event) => {
+                    if (event.target.closest('a')) return;
+
+                    // 1. Cek jika amplop foto yang terkunci diklik
+                    if (envelope.id === 'fotoEnvelope' && envelope.classList.contains('locked')) {
+                        popup.classList.remove('hidden');
+                        return; // Hentikan aksi
+                    }
+                    
+                    // 2. Buka/tutup amplop yang diklik
+                    envelope.classList.toggle('open');
+                    
+                    // 3. Jika amplop video dibuka, buka gembok amplop foto
+                    if (envelope.id === 'videoEnvelope' && envelope.classList.contains('open')) {
+                        fotoEnvelope.classList.remove('locked');
+                    }
+
+                    // 4. Cek apakah sudah waktunya mainkan audio
+                    checkAndPlayAudio();
+                });
             });
+
+            // --- Logika Tombol Tutup Popup ---
+            closePopup.addEventListener('click', () => {
+                popup.classList.add('hidden');
+            });
+            
+            // --- Fungsi untuk memutar audio ---
+            function checkAndPlayAudio() {
+                // Syarat: video & foto sudah dibuka, dan suara belum pernah dimainkan
+                if (videoEnvelope.classList.contains('open') && fotoEnvelope.classList.contains('open') && !soundsPlayed) {
+                    soundsPlayed = true; // Set penanda jadi true
+                    trumpetSound.play(); // Mainkan terompet
+                    // Setelah terompet selesai, mainkan lagu
+                    trumpetSound.addEventListener('ended', () => {
+                        birthdaySong.play();
+                    });
+                }
+            }
         });
     </script>
 </body>
