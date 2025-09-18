@@ -50,9 +50,25 @@
         .bottom-section { background-color: #c0e399; min-height: 8vh; }
         .envelope{position:relative;width:280px;height:180px;cursor:pointer;overflow:hidden;border-radius:10px;z-index:1;transition:filter .3s ease}.envelope-back,.envelope-flap,.envelope-front-label,.letter,.lock-icon{position:absolute;width:100%;height:100%}.envelope-back{background-color:#f7c9d9}.envelope-flap{background-color:#f5b9cd;transform-origin:top;transition:transform .7s cubic-bezier(.4,0,.2,1);clip-path:polygon(0 0,100% 0,100% 50%,50% 100%,0 50%);z-index:3}.envelope-front-label{display:flex;justify-content:center;align-items:center;color:#333;font-size:1.8em;font-weight:600;transition:opacity .3s ease;z-index:4;pointer-events:none}.letter{top:0;width:95%;height:95%;margin:2.5%;background-color:#fff;border-radius:8px;transform:translateY(100%);transition:transform .7s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:15px;z-index:2}.letter-content{font-size:1.2em;color:#444}.action-button{background-color:#f7c9d9;color:#333;border:none;padding:10px 25px;border-radius:20px;font-size:1em;font-weight:500;cursor:pointer;box-shadow:0 2px 5px rgba(0,0,0,.1)}.envelope.open .envelope-flap{transform:rotateX(180deg)}.envelope.open .letter{transform:translateY(0)}.envelope.open .envelope-front-label{opacity:0}.envelope.locked{cursor:not-allowed;filter:grayscale(40%)}.lock-icon{display:none;justify-content:center;align-items:center;font-size:4em;color:rgba(255,255,255,.8);text-shadow:0 2px 5px rgba(0,0,0,.3);z-index:5}.envelope.locked .lock-icon{display:flex}
         #popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:10000;display:flex;justify-content:center;align-items:center}#popup.hidden{display:none}.popup-content{background:#fff;padding:30px;border-radius:10px;text-align:center;box-shadow:0 5px 15px rgba(0,0,0,.3)}.popup-content p{font-size:1.2em;margin-bottom:20px}#closePopup{background-color:#f5b9cd;border:none;padding:10px 30px;border-radius:20px;font-size:1em;cursor:pointer}
-        .modal-container{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0);z-index:10001;display:flex;justify-content:center;align-items:center;padding:20px;opacity:1;visibility:visible;transition:background-color .4s ease,opacity .4s ease,visibility .4s ease}.modal-container.hidden{background:rgba(0,0,0,0);opacity:0;visibility:hidden}.modal-container:not(.hidden){background:rgba(0,0,0,.7)}.modal-content{background:#fff;border-radius:15px;width:100%;max-width:800px;height:85%;max-height:600px;box-shadow:0 10px 30px rgba(0,0,0,.2);display:flex;flex-direction:column;transform:scale(.7);opacity:0;transition:transform .4s cubic-bezier(.34,1.56,.64,1),opacity .3s ease}.modal-container:not(.hidden) .modal-content{transform:scale(1);opacity:1}#modal-body{padding:20px;flex-grow:1;overflow-y:auto;-webkit-overflow-scrolling:touch}#modal-body.video-body{padding:0;} #modal-body iframe{width:100%;height:100%;border:none;}.modal-footer{padding:15px;text-align:center;border-top:1px solid #eee}.modal-close-button{background-color:#f5b9cd;border:none;padding:10px 30px;border-radius:20px;font-size:1em;cursor:pointer}
+        .modal-container{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0);z-index:10001;display:flex;justify-content:center;align-items:center;padding:20px;opacity:1;visibility:visible;transition:background-color .4s ease,opacity .4s ease,visibility .4s ease}.modal-container.hidden{background:rgba(0,0,0,0);opacity:0;visibility:hidden}.modal-container:not(.hidden){background:rgba(0,0,0,.7)}.modal-content{background:#fff;border-radius:15px;width:100%;max-width:800px;height:auto;max-height:90vh;box-shadow:0 10px 30px rgba(0,0,0,.2);display:flex;flex-direction:column;transform:scale(.7);opacity:0;transition:transform .4s cubic-bezier(.34,1.56,.64,1),opacity .3s ease}.modal-container:not(.hidden) .modal-content{transform:scale(1);opacity:1}#modal-body{padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch}.modal-footer{padding:15px;text-align:center;border-top:1px solid #eee}.modal-close-button{background-color:#f5b9cd;border:none;padding:10px 30px;border-radius:20px;font-size:1em;cursor:pointer}
         #modal-body .galeri-container{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px}#modal-body .galeri-container img{width:100%;height:auto;border-radius:8px;cursor:pointer}#modal-body .ucapan-content{text-align:center;padding-top:20px}#modal-body .ucapan-content h2{font-family:'Dancing Script',cursive;font-size:2.5em;margin-bottom:20px}#modal-body .ucapan-content p{font-size:1.1em;line-height:1.6}
         #image-zoom-modal{z-index:10002}.close-zoom{position:absolute;top:15px;right:35px;color:#fff;font-size:40px;font-weight:bold;cursor:pointer;transition:transform .3s ease}.close-zoom:hover{transform:scale(1.2) rotate(90deg)}.modal-zoom-content{margin:auto;display:block;max-width:90%;max-height:90%;transition:transform .4s cubic-bezier(.34,1.56,.64,1);transform:scale(.8)}#image-zoom-modal:not(.hidden) .modal-zoom-content{transform:scale(1)}
+        
+        /* === PERBAIKAN TAMPILAN POP-UP VIDEO === */
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* Rasio 16:9 untuk video */
+            background-color: #eee;
+            border-radius: 8px;
+            overflow: hidden; /* Agar iframe mengikuti radius */
+        }
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border: 5px solid #f7c9d9; /* Border pink */
+        }
     </style>
 </head>
 <body>
@@ -65,16 +81,7 @@
         <div class="content-section">
             <div class="envelope" id="ucapanEnvelope"><div class="envelope-back"></div><div class="letter"><div class="letter-content">Untaian Doa Terbaik</div><button class="action-button" id="open-greeting-btn">Baca Ucapan</button></div><div class="envelope-flap"></div><div class="envelope-front-label">Ucapan</div></div>
             <div class="envelope locked" id="fotoEnvelope"><div class="lock-icon">❤️</div><div class="envelope-back"></div><div class="letter"><div class="letter-content">Kenangan Kita</div><button class="action-button" id="open-gallery-btn">Lihat Foto</button></div><div class="envelope-flap"></div><div class="envelope-front-label">Foto</div></div>
-            <div class="envelope locked" id="videoEnvelope">
-                <div class="lock-icon">❤️</div>
-                <div class="envelope-back"></div>
-                <div class="letter">
-                    <div class="letter-content">Sebuah Pesan Video</div>
-                    <button class="action-button" id="open-video-btn">Lihat Video</button>
-                </div>
-                <div class="envelope-flap"></div>
-                <div class="envelope-front-label">Video</div>
-            </div>
+            <div class="envelope locked" id="videoEnvelope"><div class="lock-icon">❤️</div><div class="envelope-back"></div><div class="letter"><div class="letter-content">Sebuah Pesan Video</div><button class="action-button" id="open-video-btn">Lihat Video</button></div><div class="envelope-flap"></div><div class="envelope-front-label">Video</div></div>
         </div>
         <div class="bottom-section"></div>
     </div>
@@ -84,7 +91,9 @@
     <div id="gallery-content" style="display: none;"><div class="galeri-container"><img src="foto1.jpg" alt="Foto 1" class="gallery-img"><img src="foto2.jpg" alt="Foto 2" class="gallery-img"></div></div>
     <div id="greeting-content" style="display: none;"><div class="ucapan-content"><h2>Doa Terbaik Untukmu, Bu...</h2><p>Selamat ulang tahun, Ibu. Semoga panjang umur, sehat selalu, dan senantiasa berada dalam lindungan-Nya. Terima kasih atas segala cinta dan pengorbanan yang tak pernah putus.</p></div></div>
     <div id="video-content" style="display: none;">
-        <iframe src="https://drive.google.com/file/d/1AXYbPnQyHDDXuni4pt-iYLa3hrTpCA3b/preview" width="100%" height="100%" allow="autoplay" frameborder="0"></iframe>
+        <div class="video-wrapper">
+            <iframe src="https://drive.google.com/file/d/1AXYbPnQyHDDXuni4pt-iYLa3hrTpCA3b/preview" allow="autoplay" frameborder="0"></iframe>
+        </div>
     </div>
     
     <div id="content-modal" class="modal-container hidden"><div class="modal-content"><div id="modal-body"></div><div class="modal-footer"><button id="close-modal-btn" class="modal-close-button">Kembali</button></div></div></div>
@@ -94,13 +103,9 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const body = document.querySelector('body'),preloader = document.querySelector('.preloader'),envelopes = document.querySelectorAll('.envelope'),videoEnvelope = document.getElementById('videoEnvelope'),fotoEnvelope = document.getElementById('fotoEnvelope'),ucapanEnvelope = document.getElementById('ucapanEnvelope'),popup = document.getElementById('popup'),popupText = document.getElementById('popup-text'),closePopup = document.getElementById('closePopup'),contentModal = document.getElementById('content-modal'),modalBody = document.getElementById('modal-body'),closeModalBtn = document.getElementById('close-modal-btn'),openGalleryBtn = document.getElementById('open-gallery-btn'),openGreetingBtn = document.getElementById('open-greeting-btn'),galleryContent = document.getElementById('gallery-content'),greetingContent = document.getElementById('greeting-content'),imageZoomModal = document.getElementById('image-zoom-modal'),zoomedImg = document.getElementById('zoomed-img'),closeZoomBtn = document.getElementById('close-zoom-btn'),trumpetSound = document.getElementById('trumpet-sound'),birthdaySong = document.getElementById('birthday-song');
+            // ... (Semua variabel dan logika lainnya tetap sama)
+            const body = document.querySelector('body'),preloader = document.querySelector('.preloader'),envelopes = document.querySelectorAll('.envelope'),videoEnvelope = document.getElementById('videoEnvelope'),fotoEnvelope = document.getElementById('fotoEnvelope'),ucapanEnvelope = document.getElementById('ucapanEnvelope'),popup = document.getElementById('popup'),popupText = document.getElementById('popup-text'),closePopup = document.getElementById('closePopup'),contentModal = document.getElementById('content-modal'),modalBody = document.getElementById('modal-body'),closeModalBtn = document.getElementById('close-modal-btn'),openGalleryBtn = document.getElementById('open-gallery-btn'),openGreetingBtn = document.getElementById('open-greeting-btn'),galleryContent = document.getElementById('gallery-content'),greetingContent = document.getElementById('greeting-content'),imageZoomModal = document.getElementById('image-zoom-modal'),zoomedImg = document.getElementById('zoomed-img'),closeZoomBtn = document.getElementById('close-zoom-btn'),trumpetSound = document.getElementById('trumpet-sound'),birthdaySong = document.getElementById('birthday-song'),openVideoBtn=document.getElementById("open-video-btn"),videoContent=document.getElementById("video-content");let soundsPlayed=!1;
             
-            // Elemen Baru
-            const openVideoBtn = document.getElementById('open-video-btn');
-            const videoContent = document.getElementById('video-content');
-            let soundsPlayed = !1;
-
             setTimeout(() => { preloader.classList.add('loaded'); body.classList.add('loaded'); body.style.overflowY = 'auto'; }, 1500);
 
             envelopes.forEach(envelope => {
@@ -121,28 +126,20 @@
 
             closePopup.addEventListener('click', () => popup.classList.add('hidden'));
 
-            function openModal(content, isVideo = false) {
+            function openModal(content) {
                 modalBody.innerHTML = content;
-                // Tambahkan kelas khusus jika kontennya video untuk styling
-                if (isVideo) {
-                    modalBody.classList.add('video-body');
-                } else {
-                    modalBody.classList.remove('video-body');
-                }
                 contentModal.classList.remove('hidden');
                 body.style.overflow = 'hidden';
             }
             function closeModal() {
                 contentModal.classList.add('hidden');
                 body.style.overflow = 'auto';
-                // PENTING: Hentikan video saat modal ditutup
-                modalBody.innerHTML = '';
+                modalBody.innerHTML = ''; // Menghentikan video
             }
 
             openGalleryBtn.addEventListener('click', (e) => { e.stopPropagation(); openModal(galleryContent.innerHTML); });
             openGreetingBtn.addEventListener('click', (e) => { e.stopPropagation(); openModal(greetingContent.innerHTML); });
-            // Event Listener Baru untuk Tombol Video
-            openVideoBtn.addEventListener('click', (e) => { e.stopPropagation(); openModal(videoContent.innerHTML, true); });
+            openVideoBtn.addEventListener('click', (e) => { e.stopPropagation(); openModal(videoContent.innerHTML); });
 
             closeModalBtn.addEventListener('click', closeModal);
             contentModal.addEventListener('click', (e) => { if (e.target === contentModal) closeModal(); });
