@@ -15,6 +15,8 @@
             --glass-border: rgba(255, 255, 255, 0.5);
             --accent: #4F46E5;
             --shadow-glass: 0 4px 30px rgba(0, 0, 0, 0.08);
+            --like-color: #10B981; /* Hijau untuk Like */
+            --dislike-color: #EF4444; /* Merah untuk Dislike */
         }
 
         [data-theme="dark"] {
@@ -37,7 +39,7 @@
             flex-direction: column;
         }
 
-        /* HEADER NORMAL DAN STABIL */
+        /* HEADER */
         header {
             width: 100%;
             background: var(--glass-bg); 
@@ -67,13 +69,14 @@
         .progress-container { width: 100%; height: 2px; background: transparent; }
         .progress-bar { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s ease; }
 
-        /* AREA BACA NORMAL DI TENGAH */
+        /* AREA BACA */
         .reader-area {
             flex-grow: 1; 
             display: flex; 
+            flex-direction: column;
             justify-content: center; 
             align-items: center;
-            padding: 30px 10px 90px 10px; 
+            padding: 30px 10px 100px 10px; 
             width: 100%;
         }
         
@@ -81,12 +84,71 @@
             width: 100%; 
             max-width: 500px;
             background-color: var(--bg-color);
+            margin-bottom: 20px;
         }
 
         .page { background-color: #FFF; display: flex; justify-content: center; align-items: center; user-select: none; font-weight: bold; font-size: 18px; color: #888; border: 1px solid #eee;}
         .page img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
 
-        /* BOTTOM NAV STABIL DI BAWAH LAYAR */
+        /* --- FITUR TOMBOL LIKE & DISLIKE --- */
+        .reaction-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .reaction-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            transition: all 0.2s ease;
+        }
+
+        .reaction-btn svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: transform 0.2s;
+        }
+
+        .reaction-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* State ketika sudah di-like/dislike */
+        .reaction-btn.liked {
+            color: var(--like-color);
+            border-color: var(--like-color);
+            background: rgba(16, 185, 129, 0.1);
+        }
+        .reaction-btn.liked svg {
+            fill: var(--like-color);
+        }
+
+        .reaction-btn.disliked {
+            color: var(--dislike-color);
+            border-color: var(--dislike-color);
+            background: rgba(239, 68, 68, 0.1);
+        }
+        .reaction-btn.disliked svg {
+            fill: var(--dislike-color);
+        }
+
+        /* BOTTOM NAV */
         .bottom-nav {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
             background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
@@ -123,15 +185,12 @@
     <header>
         <div class="brand">Atshura <span class="brand-badge">PRO</span></div>
         <div class="header-tools">
-            <!-- Tombol Mode Manga (Kanan ke Kiri) -->
             <button class="icon-btn" id="btn-rtl" title="Mode Manga (Kanan ke Kiri)">
                 <svg viewBox="0 0 24 24"><path d="M21 12H3m0 0l6-6m-6 6l6 6"></path></svg>
             </button>
-            <!-- Tombol Dark Mode -->
             <button class="icon-btn" id="btn-darkmode" title="Ubah Tema">
                 <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
             </button>
-            <!-- Tombol Fullscreen Website Standar -->
             <button class="icon-btn" id="btn-fullscreen" title="Layar Penuh Website">
                 <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
             </button>
@@ -140,7 +199,7 @@
 
     <div class="progress-container"><div class="progress-bar" id="reading-progress"></div></div>
 
-    <!-- AREA BACA NORMAL -->
+    <!-- AREA BACA -->
     <div class="reader-area" id="reader-area">
         <div class="book-container" id="flipbook">
             <div class="page">Sampul Depan</div>
@@ -150,9 +209,21 @@
             <div class="page">Hal 4</div>
             <div class="page">Sampul Belakang</div>
         </div>
+
+        <!-- TOMBOL LIKE & DISLIKE DI BAWAH BUKU -->
+        <div class="reaction-container">
+            <button class="reaction-btn" id="btn-like">
+                <svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+                <span id="like-count">124</span>
+            </button>
+            <button class="reaction-btn" id="btn-dislike">
+                <svg viewBox="0 0 24 24"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"></path></svg>
+                <span id="dislike-count">3</span>
+            </button>
+        </div>
     </div>
 
-    <!-- BOTTOM NAV TETAP ADA DENGAN AMAN DI BAWAH -->
+    <!-- BOTTOM NAV -->
     <div class="bottom-nav">
         <button class="nav-btn" id="btn-prev"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
         <div class="page-info" id="info-halaman">0 / 5</div>
@@ -204,7 +275,7 @@
                 if(activeBtn) activeBtn.classList.add('active');
             });
 
-            // KETUK SISI KIRI / KANAN UNTUK NAVIGASI
+            // KETUK SISI KIRI / KANAN
             document.getElementById('reader-area').addEventListener('click', (e) => {
                 if (e.target.closest('button') || e.target.closest('.bottom-nav')) return;
 
@@ -223,6 +294,63 @@
             document.getElementById('btn-prev').addEventListener('click', () => isMangaMode ? pageFlip.flipNext() : pageFlip.flipPrev());
             document.getElementById('btn-next').addEventListener('click', () => isMangaMode ? pageFlip.flipPrev() : pageFlip.flipNext());
 
+            // --- FITUR INTERAKSI LIKE & DISLIKE ---
+            const btnLike = document.getElementById('btn-like');
+            const btnDislike = document.getElementById('btn-dislike');
+            const likeCountSpan = document.getElementById('like-count');
+            const dislikeCountSpan = document.getElementById('dislike-count');
+
+            let likes = 124;
+            let dislikes = 3;
+            let userReaction = localStorage.getItem('atshura_reaction') || null; // 'like', 'dislike', or null
+
+            // Sinkronisasi status awal dari memori browser
+            if (userReaction === 'like') {
+                btnLike.classList.add('liked');
+            } else if (userReaction === 'dislike') {
+                btnDislike.classList.add('disliked');
+            }
+
+            btnLike.addEventListener('click', () => {
+                if (userReaction === 'like') {
+                    likes--;
+                    userReaction = null;
+                    btnLike.classList.remove('liked');
+                } else {
+                    if (userReaction === 'dislike') {
+                        dislikes--;
+                        btnDislike.classList.remove('disliked');
+                    }
+                    likes++;
+                    userReaction = 'like';
+                    btnLike.classList.add('liked');
+                }
+                likeCountSpan.innerText = likes;
+                dislikeCountSpan.innerText = dislikes;
+                localStorage.setItem('atshura_reaction', userReaction);
+                if (navigator.vibrate) navigator.vibrate(30);
+            });
+
+            btnDislike.addEventListener('click', () => {
+                if (userReaction === 'dislike') {
+                    dislikes--;
+                    userReaction = null;
+                    btnDislike.classList.remove('disliked');
+                } else {
+                    if (userReaction === 'like') {
+                        likes--;
+                        btnLike.classList.remove('liked');
+                    }
+                    dislikes++;
+                    userReaction = 'dislike';
+                    btnDislike.classList.add('disliked');
+                }
+                likeCountSpan.innerText = likes;
+                dislikeCountSpan.innerText = dislikes;
+                localStorage.setItem('atshura_reaction', userReaction);
+                if (navigator.vibrate) navigator.vibrate(30);
+            });
+
             // MODE MANGA TOGGLE
             const btnRtl = document.getElementById('btn-rtl');
             btnRtl.addEventListener('click', () => {
@@ -231,7 +359,7 @@
                 if (navigator.vibrate) navigator.vibrate(40);
             });
 
-            // FULLSCREEN WEBSITE STANDAR (Murni memperluas layar web tanpa menyembunyikan header/footer)
+            // FULLSCREEN WEBSITE
             const btnFullscreen = document.getElementById('btn-fullscreen');
             btnFullscreen.addEventListener('click', () => {
                 if (!document.fullscreenElement) {
