@@ -49,10 +49,10 @@
         
         #home-screen.hidden { opacity: 0; pointer-events: none; transform: scale(1.05); }
 
-        /* Latar belakang blur elegan */
+        /* Latar belakang blur sekarang mengambil gambar dari folder lokal */
         .home-bg {
             position: absolute; top: -10%; left: -10%; width: 120%; height: 50%;
-            background: linear-gradient(to bottom, rgba(79, 70, 229, 0.3), var(--bg-color)), url('https://via.placeholder.com/800') center/cover;
+            background: linear-gradient(to bottom, rgba(79, 70, 229, 0.3), var(--bg-color)), url('images/cover.jpg') center/cover;
             filter: blur(20px); z-index: 1; opacity: 0.6;
         }
 
@@ -120,7 +120,6 @@
         .page { background-color: #FFF; display: flex; justify-content: center; align-items: center; user-select: none; font-weight: bold; font-size: 18px; color: #888; border: 1px solid #eee;}
         .page img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
 
-        /* REACTION BUTTONS */
         .reaction-container { display: flex; gap: 15px; margin-top: 5px; }
         .reaction-btn {
             background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-main);
@@ -145,7 +144,6 @@
         .nav-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none; }
         .page-info { font-size: 13px; font-weight: 600; color: var(--text-main); white-space: nowrap; text-align: center; font-variant-numeric: tabular-nums; }
 
-        /* MODAL POPUP (Dipakai untuk Menu Hal & Sinopsis) */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: flex-end; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 1000; }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-content { background: var(--bg-color); color: var(--text-main); width: 100%; max-width: 500px; padding: 24px; border-radius: 20px 20px 0 0; transform: translateY(100%); transition: transform 0.3s; max-height: 80vh; overflow-y: auto;}
@@ -165,8 +163,8 @@
     <div id="home-screen">
         <div class="home-bg"></div>
         <div class="home-content">
-            <!-- Ganti URL ini dengan link cover komik Anda -->
-            <img src="https://via.placeholder.com/300x450.png?text=Cover+Komik" alt="Cover Komik" class="home-cover">
+            <!-- Gambar Cover kini mengambil dari folder 'images' -->
+            <img src="images/cover.jpg" alt="Cover Komik" class="home-cover">
             
             <h1 class="home-title">Atshura: Sang Penguasa</h1>
             <p class="home-author">Karya: Cendikia Titan Aulia Pujiono</p>
@@ -222,6 +220,7 @@
 
         <div class="reader-area" id="reader-area">
             <div class="book-container" id="flipbook">
+                <!-- Anda juga bisa mengganti teks ini dengan tag <img src="images/halaman-1.jpg"> nantinya -->
                 <div class="page">Sampul Depan</div>
                 <div class="page">Hal 1</div>
                 <div class="page">Hal 2</div>
@@ -230,7 +229,6 @@
                 <div class="page">Sampul Belakang</div>
             </div>
 
-            <!-- TOMBOL LIKE & DISLIKE LOKAL -->
             <div class="reaction-container">
                 <button class="reaction-btn" id="btn-like">
                     <svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
@@ -257,7 +255,6 @@
     <!-- =========================================
          MODAL POP-UPS
          ========================================= -->
-    <!-- Modal Navigasi Halaman -->
     <div class="modal-overlay" id="modal-halaman">
         <div class="modal-content">
             <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -270,7 +267,6 @@
         </div>
     </div>
 
-    <!-- Modal Sinopsis -->
     <div class="modal-overlay" id="modal-sinopsis">
         <div class="modal-content">
             <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -295,19 +291,15 @@
             const btnStartRead = document.getElementById('btn-start-read');
             const btnBackHome = document.getElementById('btn-back-home');
             
-            // Masuk ke Mode Baca
             btnStartRead.addEventListener('click', () => {
                 homeScreen.classList.add('hidden');
-                // Scroll to top di reader
                 window.scrollTo(0, 0);
             });
 
-            // Kembali ke Home
             btnBackHome.addEventListener('click', () => {
                 homeScreen.classList.remove('hidden');
             });
 
-            // Tombol Bagikan di Home
             document.getElementById('btn-share-home').addEventListener('click', async () => {
                 if (navigator.share) {
                     try { await navigator.share({ title: 'Atshura Comics', text: 'Baca komik seru terbaru ini!', url: window.location.href }); } 
@@ -380,11 +372,10 @@
                 localStorage.setItem('atshura_reaction', userReaction);
             });
 
-            // --- MODALS (Menu & Sinopsis) ---
+            // --- MODALS ---
             const modalHalaman = document.getElementById('modal-halaman');
             const modalSinopsis = document.getElementById('modal-sinopsis');
             
-            // Generate Grid Angka Halaman
             const gridAngka = document.getElementById('grid-angka');
             for (let i = 0; i <= totalHalaman; i++) {
                 let btn = document.createElement('button');
@@ -394,11 +385,9 @@
                 gridAngka.appendChild(btn);
             }
             
-            // Buka Modal
             document.getElementById('btn-buka').addEventListener('click', () => modalHalaman.classList.add('active'));
             document.getElementById('btn-show-synopsis').addEventListener('click', () => modalSinopsis.classList.add('active'));
             
-            // Tutup Modal
             document.querySelectorAll('.close-modal').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.target.closest('.modal-overlay').classList.remove('active');
