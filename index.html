@@ -3,83 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Baca Komik - Revianchim</title>
+    <title>Revianchim - Ebook Komik Eksklusif</title>
+    
+    <!-- Mengimpor Font Modern Minimalis dari Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    
     <style>
+        /* RESET & BASE TEMA */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
+
         body {
-            background-color: #E0F7FA; /* Biru Muda Pastel (Latar Belakang) */
-            color: #1A237E; /* Biru Dongker untuk teks */
-            font-family: 'Segoe UI', sans-serif;
+            /* Gradasi biru muda yang elegan */
+            background: linear-gradient(135deg, #E0F7FA 0%, #C5CAE9 100%);
+            color: #0A192F; /* Biru sangat gelap untuk teks, lebih elegan dari hitam */
+            font-family: 'Montserrat', sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
-            min-height: 100vh;
             justify-content: center;
+            min-height: 100vh;
+            padding: 40px 20px;
         }
-        
-        /* Kontainer untuk Komik */
+
+        /* AREA BUKU KOMIK - SUDUT TAJAM & BAYANGAN KONTRAST */
         .book-container {
-            margin-bottom: 25px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            margin-bottom: 40px;
+            /* Sudut tajam, garis tegas, dan bayangan blok (solid shadow) */
+            border: 3px solid #0A192F;
+            box-shadow: 12px 12px 0px rgba(10, 25, 47, 0.9);
+            background-color: #fff;
+            transition: transform 0.3s ease;
         }
         
-        /* Styling Halaman Komik (Sementara berupa warna, nanti bisa diganti gambar) */
+        .book-container:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 14px 14px 0px rgba(10, 25, 47, 0.9);
+        }
+
+        /* HALAMAN KOMIK */
         .page {
-            background-color: white;
-            border: solid 1px #b3e5fc;
+            background-color: #FFFFFF;
+            border-right: 1px solid #E0E0E0;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-size: 20px;
-            font-weight: bold;
-            /* Ini mencegah teks terseleksi saat membalik halaman */
-            user-select: none; 
+            font-size: 18px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            user-select: none;
+            overflow: hidden;
         }
-        
-        /* Styling untuk Navigasi Bawah (3 Tombol) */
+
+        /* AREA NAVIGASI TOMBOL */
         .nav-container {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 16px;
             width: 100%;
-            max-width: 400px; /* Lebar maksimal navigasi menyesuaikan buku */
+            max-width: 420px;
         }
+
         .nav-top {
             display: flex;
             justify-content: space-between;
-            gap: 12px;
+            gap: 16px;
         }
+
+        /* STYLING TOMBOL MODERN (SUDUT 90 DERAJAT) */
         button {
-            padding: 15px;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 16px;
+            border-radius: 0; /* Menghilangkan lengkungan (sudut-sudut tajam) */
+            border: 2px solid #0A192F;
+            padding: 16px 20px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
             cursor: pointer;
-            transition: opacity 0.2s;
+            position: relative;
+            transition: all 0.2s ease;
+            box-shadow: 4px 4px 0px rgba(10, 25, 47, 1);
         }
+
+        button:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px rgba(10, 25, 47, 1);
+        }
+
         button:active {
-            opacity: 0.7;
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px rgba(10, 25, 47, 1);
         }
-        
-        /* Warna Analogous Kiri (Cyan/Teal Muda) untuk tombol Next/Prev */
-        #btn-prev, #btn-next {
-            background-color: #80DEEA; 
-            color: #1A237E;
-            flex: 1; /* Agar membagi 2 ruang sama besar */
+
+        /* WARNA TOMBOL - TEORI WARNA BERSEBELAHAN & KONTRAST */
+        #btn-prev {
+            background-color: #4DD0E1; /* Analogous 1: Cyan/Teal */
+            color: #0A192F;
+            flex: 1;
         }
-        
-        /* Warna Analogous Kanan (Periwinkle Muda) untuk Buka Halaman */
+
+        #btn-next {
+            background-color: #9FA8DA; /* Analogous 2: Periwinkle */
+            color: #0A192F;
+            flex: 1;
+        }
+
         #btn-buka {
-            background-color: #C5CAE9;
-            color: #1A237E;
+            background-color: #FF6D00; /* Complementary Contrast: Jingga Elegan */
+            color: #FFFFFF;
             width: 100%;
         }
+
     </style>
 </head>
 <body>
@@ -94,46 +134,41 @@
         <div class="page">Sampul Belakang</div>
     </div>
 
-    <!-- Area Navigasi (Sesuai Permintaan) -->
+    <!-- Area Navigasi 3 Tombol -->
     <div class="nav-container">
         <div class="nav-top">
-            <button id="btn-prev">⬅️ Previous</button>
-            <button id="btn-next">Next ➡️</button>
+            <button id="btn-prev">⬅ Prev</button>
+            <button id="btn-next">Next ➡</button>
         </div>
         <button id="btn-buka">📖 Buka Halaman</button>
     </div>
 
-    <!-- Memuat Library StPageFlip dari CDN -->
+    <!-- Script Library StPageFlip -->
     <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Inisialisasi Flipbook
+            // Konfigurasi Flipbook
             const pageFlip = new St.PageFlip(document.getElementById('flipbook'), {
-                width: 350, // Lebar halaman (Portrait)
-                height: 500, // Tinggi halaman
-                showCover: true, // Halaman pertama dan terakhir jadi sampul
-                usePortrait: true // Optimal untuk mobile
+                width: 380, // Dibuat sedikit lebih lebar agar proporsional
+                height: 550,
+                showCover: true,
+                usePortrait: true,
+                maxShadowOpacity: 0.3 // Bayangan lipatan buku yang elegan
             });
 
-            // Muat semua elemen berkelas 'page' ke dalam buku
             pageFlip.loadFromHTML(document.querySelectorAll('.page'));
 
-            // Logika Tombol Previous
             document.getElementById('btn-prev').addEventListener('click', () => {
                 pageFlip.flipPrev();
             });
 
-            // Logika Tombol Next
             document.getElementById('btn-next').addEventListener('click', () => {
                 pageFlip.flipNext();
             });
             
-            // Logika Tombol Buka Halaman
             document.getElementById('btn-buka').addEventListener('click', () => {
-                // Fitur sederhana untuk melompat ke halaman tertentu
-                let hal = prompt("Masukkan nomor halaman (0 untuk sampul):");
+                let hal = prompt("Masukkan nomor halaman yang dituju (0 untuk sampul awal):");
                 if(hal !== null && hal !== "") {
-                    // Memastikan yang dimasukkan adalah angka
                     pageFlip.flip(parseInt(hal)); 
                 }
             });
