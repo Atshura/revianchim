@@ -32,18 +32,26 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             transition: background-color 0.3s ease;
-            height: 100vh;
-            height: 100dvh;
-            display: flex; flex-direction: column; overflow: hidden;
+            min-height: 100vh;
+            display: flex; 
+            flex-direction: column;
         }
 
-        /* HEADER */
+        /* HEADER NORMAL DAN STABIL */
         header {
-            position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
-            background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            width: 100%;
+            background: var(--glass-bg); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--glass-border);
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 20px; box-shadow: var(--shadow-glass);
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            padding: 12px 20px; 
+            box-shadow: var(--shadow-glass);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
         .brand { font-weight: 700; font-size: 16px; display: flex; align-items: center; gap: 6px;}
         .brand-badge { background: var(--accent); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; letter-spacing: 1px;}
@@ -56,24 +64,29 @@
         .icon-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
         .icon-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
 
-        .progress-container { position: fixed; top: 59px; left: 0; width: 100%; height: 2px; background: transparent; z-index: 99; }
+        .progress-container { width: 100%; height: 2px; background: transparent; }
         .progress-bar { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s ease; }
 
-        /* AREA BACA (Stabil, tidak ada auto-hide UI yang mengganggu) */
+        /* AREA BACA NORMAL DI TENGAH */
         .reader-area {
-            flex-grow: 1; display: flex; justify-content: center; align-items: center;
-            padding: 70px 10px 80px 10px; width: 100%; height: 100dvh;
+            flex-grow: 1; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            padding: 30px 10px 90px 10px; 
+            width: 100%;
         }
         
         .book-container {
-            width: 100%; height: 100%; max-width: 550px;
+            width: 100%; 
+            max-width: 500px;
             background-color: var(--bg-color);
         }
 
-        .page { background-color: #FFF; display: flex; justify-content: center; align-items: center; user-select: none; font-weight: bold; font-size: 20px; color: #ccc;}
+        .page { background-color: #FFF; display: flex; justify-content: center; align-items: center; user-select: none; font-weight: bold; font-size: 18px; color: #888; border: 1px solid #eee;}
         .page img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
 
-        /* BOTTOM NAV - SELALU MUNCUL STABIL DI BAWAH */
+        /* BOTTOM NAV STABIL DI BAWAH LAYAR */
         .bottom-nav {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
             background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
@@ -110,18 +123,24 @@
     <header>
         <div class="brand">Atshura <span class="brand-badge">PRO</span></div>
         <div class="header-tools">
+            <!-- Tombol Mode Manga (Kanan ke Kiri) -->
             <button class="icon-btn" id="btn-rtl" title="Mode Manga (Kanan ke Kiri)">
                 <svg viewBox="0 0 24 24"><path d="M21 12H3m0 0l6-6m-6 6l6 6"></path></svg>
             </button>
+            <!-- Tombol Dark Mode -->
             <button class="icon-btn" id="btn-darkmode" title="Ubah Tema">
                 <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            </button>
+            <!-- Tombol Fullscreen Website Standar -->
+            <button class="icon-btn" id="btn-fullscreen" title="Layar Penuh Website">
+                <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
             </button>
         </div>
     </header>
 
     <div class="progress-container"><div class="progress-bar" id="reading-progress"></div></div>
 
-    <!-- AREA BACA -->
+    <!-- AREA BACA NORMAL -->
     <div class="reader-area" id="reader-area">
         <div class="book-container" id="flipbook">
             <div class="page">Sampul Depan</div>
@@ -133,7 +152,7 @@
         </div>
     </div>
 
-    <!-- BOTTOM NAV TETAP STABIL DI BAWAH -->
+    <!-- BOTTOM NAV TETAP ADA DENGAN AMAN DI BAWAH -->
     <div class="bottom-nav">
         <button class="nav-btn" id="btn-prev"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
         <div class="page-info" id="info-halaman">0 / 5</div>
@@ -178,7 +197,6 @@
                 infoHalaman.innerText = `${e.data} / ${totalHalaman}`;
                 progressBar.style.width = ((e.data / totalHalaman) * 100) + '%';
                 
-                // Haptic feedback halus
                 if (navigator.vibrate) navigator.vibrate(25);
 
                 document.querySelectorAll('.btn-angka').forEach(btn => btn.classList.remove('active'));
@@ -186,7 +204,7 @@
                 if(activeBtn) activeBtn.classList.add('active');
             });
 
-            // KETUK SISI KIRI / KANAN UNTUK NAVIGASI (Tanpa auto-hide UI)
+            // KETUK SISI KIRI / KANAN UNTUK NAVIGASI
             document.getElementById('reader-area').addEventListener('click', (e) => {
                 if (e.target.closest('button') || e.target.closest('.bottom-nav')) return;
 
@@ -208,9 +226,19 @@
             // MODE MANGA TOGGLE
             const btnRtl = document.getElementById('btn-rtl');
             btnRtl.addEventListener('click', () => {
-                isMangaMode = !isMangaMenu = !isMangaMode;
+                isMangaMode = !isMangaMode;
                 btnRtl.classList.toggle('active');
                 if (navigator.vibrate) navigator.vibrate(40);
+            });
+
+            // FULLSCREEN WEBSITE STANDAR (Murni memperluas layar web tanpa menyembunyikan header/footer)
+            const btnFullscreen = document.getElementById('btn-fullscreen');
+            btnFullscreen.addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(err => console.log(err));
+                } else {
+                    document.exitFullscreen();
+                }
             });
 
             // MODAL GENERATOR
