@@ -2,330 +2,356 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta property="og:title" content="Revianchim - Baca Komik Eksklusif">
-    <meta property="og:description" content="Baca komik terbaru dari Atshura Comics.">
-    <meta property="og:image" content="LINK_GAMBAR_COVER_ANDA_DI_SINI.jpg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta property="og:title" content="Atshura Comics - Platform Baca Premium">
+    <meta property="og:description" content="Nikmati pengalaman membaca komik terbaik dengan fitur pro.">
+    <title>Atshura Comics - Premium Reader</title>
     
-    <title>Revianchim - Ebook Komik</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Inter: Sangat populer di UI/UX Profesional (SaaS) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- CSS VARIABLES UNTUK MODE TERANG & GELAP --- */
+        /* === TEMA & VARIABEL GLOBAL === */
         :root {
-            --bg-gradient: linear-gradient(135deg, #E0F7FA 0%, #C5CAE9 100%);
-            --text-main: #1A237E;
-            --book-shadow: rgba(26, 35, 126, 0.15);
-            --btn-prev: #80DEEA;
-            --btn-next: #9FA8DA;
-            --btn-text: #0A192F;
-            --modal-bg: #ffffff;
-            --pill-bg: rgba(255, 255, 255, 0.4);
-            --pill-hover: rgba(255, 255, 255, 0.8);
+            --bg-color: #F8FAFC;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --accent: #4F46E5; /* Indigo Pro */
+            --accent-hover: #4338CA;
+            --shadow-book: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            --shadow-glass: 0 4px 30px rgba(0, 0, 0, 0.05);
         }
 
         [data-theme="dark"] {
-            --bg-gradient: linear-gradient(135deg, #121212 0%, #1e1e24 100%);
-            --text-main: #E0F7FA;
-            --book-shadow: rgba(0, 0, 0, 0.5);
-            --btn-prev: #37474F;
-            --btn-next: #455A64;
-            --btn-text: #E0E0E0;
-            --modal-bg: #2C2C2C;
-            --pill-bg: rgba(255, 255, 255, 0.1);
-            --pill-hover: rgba(255, 255, 255, 0.2);
+            --bg-color: #0B0F19; /* Hitam elegan */
+            --text-main: #F1F5F9;
+            --text-muted: #94A3B8;
+            --glass-bg: rgba(15, 23, 42, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --accent: #6366F1;
+            --accent-hover: #818CF8;
+            --shadow-book: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            --shadow-glass: 0 4px 30px rgba(0, 0, 0, 0.3);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
 
         body {
-            background: var(--bg-gradient);
+            background-color: var(--bg-color);
             color: var(--text-main);
-            font-family: 'Poppins', sans-serif;
+            transition: background-color 0.4s ease;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            transition: background 0.5s ease;
-            position: relative; /* Penting untuk tombol melayang */
+            overflow-x: hidden;
         }
 
-        /* --- PRELOADER (LAYAR LOADING) --- */
-        #preloader {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #E0F7FA; z-index: 9999;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: opacity 0.5s ease;
+        /* === HEADER (TOP NAVBAR GLASS) === */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
+            background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 24px; box-shadow: var(--shadow-glass);
         }
-        .loader-spinner {
-            border: 5px solid rgba(26, 35, 126, 0.2); border-top: 5px solid #FF8A65;
-            border-radius: 50%; width: 50px; height: 50px;
-            animation: spin 1s linear infinite; margin-bottom: 15px;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* --- UI PRO: KAPSUL KONTROL MELAYANG (FLOATING PILL) --- */
-        .pro-controls {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            gap: 8px;
-            background: var(--pill-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            padding: 6px;
-            border-radius: 50px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border: 1px solid rgba(255,255,255,0.2);
-            z-index: 100;
-            transition: background 0.3s ease;
-        }
-
+        .brand { font-weight: 700; font-size: 18px; letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px;}
+        .brand-badge { background: var(--accent); color: white; padding: 2px 8px; border-radius: 6px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px;}
+        
+        .header-tools { display: flex; gap: 12px; }
         .icon-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-main);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            background: transparent; border: 1px solid var(--glass-border);
+            color: var(--text-main); width: 36px; height: 36px; border-radius: 10px;
+            display: flex; justify-content: center; align-items: center; cursor: pointer;
+            transition: all 0.2s ease;
         }
+        .icon-btn:hover { background: rgba(128,128,128,0.1); transform: translateY(-2px); }
+        .icon-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 
-        .icon-btn:hover {
-            background: var(--pill-hover);
-            transform: scale(1.05);
-        }
+        /* === PROGRESS BAR === */
+        .progress-container { position: fixed; top: 61px; left: 0; width: 100%; height: 3px; background: rgba(128,128,128,0.2); z-index: 99; }
+        .progress-bar { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s ease; }
 
-        .icon-btn svg {
-            width: 20px;
-            height: 20px;
-            stroke: currentColor;
-            stroke-width: 2;
-            fill: none;
-            stroke-linecap: round;
-            stroke-linejoin: round;
+        /* === AREA BACA === */
+        .reader-area {
+            flex-grow: 1; display: flex; justify-content: center; align-items: center;
+            padding: 100px 20px 120px; /* Jarak untuk header dan bottom nav */
         }
-
-        /* --- INDIKATOR & BUKU --- */
-        .main-content {
-            display: flex; flex-direction: column; align-items: center;
-            padding: 60px 20px 40px; /* Padding atas ditambah agar tidak tertutup tombol */
-            flex-grow: 1;
-            width: 100%;
-        }
-        .page-indicator {
-            background-color: var(--pill-bg);
-            backdrop-filter: blur(5px);
-            padding: 8px 24px; border-radius: 20px; font-weight: 600; font-size: 14px;
-            margin-bottom: 20px; box-shadow: 0 4px 10px var(--book-shadow);
-        }
+        
         .book-container {
-            margin-bottom: 30px; border-radius: 16px;
-            box-shadow: 0 20px 40px var(--book-shadow); background-color: #fff;
+            border-radius: 8px; box-shadow: var(--shadow-book); background-color: #fff;
+            position: relative;
         }
-        .page { background-color: #FFFFFF; display: flex; justify-content: center; align-items: center; user-select: none; }
+        /* Efek bayangan lipatan tengah buku */
+        .book-container::after {
+            content: ''; position: absolute; top: 0; left: 50%; width: 2px; height: 100%;
+            background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0) 100%);
+            z-index: 10; pointer-events: none;
+        }
+
+        .page { background-color: #FFF; display: flex; justify-content: center; align-items: center; user-select: none; border-right: 1px solid #f1f1f1; font-weight: 500; color: #ccc;}
         .page img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
 
-        /* --- NAVIGASI BAWAH --- */
-        .nav-container { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 380px; }
-        .nav-top { display: flex; justify-content: space-between; gap: 15px; }
-        button.nav-btn {
-            border-radius: 30px; border: none; padding: 14px 24px;
-            font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 15px; cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: all 0.3s ease;
-        }
-        button.nav-btn:hover { transform: translateY(-3px); }
-        #btn-prev { background-color: var(--btn-prev); color: var(--btn-text); flex: 1; }
-        #btn-next { background-color: var(--btn-next); color: var(--btn-text); flex: 1; }
-        #btn-buka { background-color: #FF8A65; color: #FFFFFF; width: 100%; }
-
-        /* --- FITUR SOSIAL & FOOTER --- */
-        .social-share { margin-top: 30px; text-align: center; }
-        #btn-share {
-            background: linear-gradient(45deg, #1A237E, #3949AB); color: white;
-            padding: 12px 30px; border-radius: 30px; border: none; font-weight: 600; cursor: pointer;
-            box-shadow: 0 4px 15px rgba(26, 35, 126, 0.3); transition: all 0.3s ease;
-        }
-        #btn-share:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(26, 35, 126, 0.4); }
-        
-        footer {
-            margin-top: auto; padding: 30px; text-align: center; font-size: 12px;
-            color: var(--text-main); opacity: 0.7; width: 100%;
+        /* === NAVIGASI BAWAH MELAYANG (FLOATING BOTTOM BAR) === */
+        .bottom-nav {
+            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+            background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border); border-radius: 50px;
+            display: flex; align-items: center; padding: 8px; gap: 8px;
+            box-shadow: var(--shadow-glass); z-index: 100;
         }
 
-        /* --- MODAL (POPUP) --- */
+        .nav-btn {
+            background: transparent; color: var(--text-main); border: none;
+            padding: 10px 20px; border-radius: 40px; font-weight: 600; font-size: 14px;
+            cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s ease;
+        }
+        .nav-btn:hover { background: rgba(128,128,128,0.1); }
+        .nav-btn.primary { background: var(--accent); color: white; }
+        .nav-btn.primary:hover { background: var(--accent-hover); }
+        .nav-btn svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round;}
+
+        .page-info { font-size: 13px; font-weight: 600; padding: 0 16px; color: var(--text-muted); border-left: 1px solid var(--glass-border); border-right: 1px solid var(--glass-border); }
+
+        /* === MODAL CHAPTER/HALAMAN === */
         .modal-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
-            display: flex; justify-content: center; align-items: center;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(8px);
+            display: flex; justify-content: center; align-items: flex-end; /* Muncul dari bawah */
             opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 1000;
         }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-content {
-            background: var(--modal-bg); color: var(--text-main);
-            padding: 30px; border-radius: 24px; width: 90%; max-width: 400px; text-align: center;
+            background: var(--bg-color); color: var(--text-main);
+            width: 100%; max-width: 500px; padding: 30px; border-radius: 24px 24px 0 0;
+            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
-        .grid-halaman { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 20px 0; max-height: 50vh; overflow-y: auto; }
-        .btn-angka { background: rgba(128,128,128,0.1); color: var(--text-main); padding: 10px 0; border-radius: 12px; border: none; font-weight:600; cursor:pointer; transition: background 0.2s;}
-        .btn-angka:hover { background: rgba(128,128,128,0.3); }
-        #btn-tutup-modal { background: #FF5252; color: white; padding: 10px 30px; border-radius: 20px; border:none; cursor:pointer;}
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;}
+        .modal-header h3 { font-size: 18px; }
+        .grid-halaman { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; max-height: 40vh; overflow-y: auto; padding-bottom: 20px; }
+        .btn-angka { background: transparent; border: 1px solid var(--glass-border); color: var(--text-main); padding: 12px 0; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .btn-angka:hover, .btn-angka.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+        /* LOADING & TOAST */
+        #preloader { position: fixed; inset: 0; background: var(--bg-color); z-index: 9999; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s; }
+        .spinner { width: 40px; height: 40px; border: 3px solid rgba(128,128,128,0.2); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--text-main); color: var(--bg-color); padding: 10px 24px; border-radius: 30px; font-size: 13px; font-weight: 500; opacity: 0; pointer-events: none; transition: all 0.3s; z-index: 2000; box-shadow: var(--shadow-glass);}
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        
+        footer { text-align: center; padding: 20px; font-size: 12px; color: var(--text-muted); padding-bottom: 100px;}
     </style>
 </head>
 <body>
 
-    <!-- LAYAR LOADING -->
-    <div id="preloader">
-        <div class="loader-spinner"></div>
-    </div>
+    <div id="preloader"><div class="spinner"></div></div>
 
-    <!-- UI PRO: KAPSUL KONTROL MELAYANG DI POJOK KANAN ATAS -->
-    <div class="pro-controls">
-        <button class="icon-btn" id="btn-darkmode" title="Mode Gelap/Terang">
-            <!-- Ikon Bulan (Default) -->
-            <svg id="icon-theme" viewBox="0 0 24 24">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-            </svg>
-        </button>
-        <button class="icon-btn" id="btn-fullscreen" title="Layar Penuh">
-            <!-- Ikon Maximize -->
-            <svg id="icon-screen" viewBox="0 0 24 24">
-                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
-            </svg>
-        </button>
-    </div>
+    <!-- HEADER PRO -->
+    <header>
+        <div class="brand">
+            Atshura <span class="brand-badge">Pro</span>
+        </div>
+        <div class="header-tools">
+            <button class="icon-btn" id="btn-autoplay" title="Auto Read">
+                <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            </button>
+            <button class="icon-btn" id="btn-darkmode" title="Ubah Tema">
+                <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            </button>
+            <button class="icon-btn" id="btn-fullscreen" title="Layar Penuh">
+                <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+            </button>
+        </div>
+    </header>
 
-    <div class="main-content">
-        <!-- INDIKATOR HALAMAN -->
-        <div class="page-indicator" id="info-halaman">Sampul Depan</div>
+    <!-- PROGRESS BAR -->
+    <div class="progress-container"><div class="progress-bar" id="reading-progress"></div></div>
 
-        <!-- FLIPBOOK -->
+    <!-- AREA BACA -->
+    <div class="reader-area">
         <div class="book-container" id="flipbook">
-            <div class="page"></div> <div class="page"></div> <div class="page"></div> <div class="page"></div>
-            <div class="page"></div> <div class="page"></div> <div class="page"></div> <div class="page"></div>
-        </div>
-
-        <!-- NAVIGASI BAWAH -->
-        <div class="nav-container">
-            <div class="nav-top">
-                <button class="nav-btn" id="btn-prev">⬅ Prev</button>
-                <button class="nav-btn" id="btn-next">Next ➡</button>
-            </div>
-            <button class="nav-btn" id="btn-buka">📖 Buka Halaman</button>
-        </div>
-
-        <!-- TOMBOL SHARE -->
-        <div class="social-share">
-            <button id="btn-share">Bagikan Komik</button>
+            <!-- Nanti isi dengan tag IMG komik -->
+            <div class="page">Cover Depan</div>
+            <div class="page">Hal 1</div>
+            <div class="page">Hal 2</div>
+            <div class="page">Hal 3</div>
+            <div class="page">Hal 4</div>
+            <div class="page">Hal 5</div>
+            <div class="page">Hal 6</div>
+            <div class="page">Cover Belakang</div>
         </div>
     </div>
 
-    <!-- FOOTER -->
+    <!-- BOTTOM NAV (APP STYLE) -->
+    <div class="bottom-nav">
+        <button class="nav-btn" id="btn-prev">
+            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        
+        <div class="page-info" id="info-halaman">1 / 8</div>
+        
+        <button class="nav-btn primary" id="btn-buka">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            Menu
+        </button>
+
+        <button class="nav-btn" id="btn-next">
+            <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+    </div>
+
+    <!-- NOTIFIKASI TOAST -->
+    <div class="toast" id="toast-notif">Notifikasi</div>
+
     <footer>
-        <p><strong>Atshura Comics</strong></p>
-        <p>&copy; 2026 Cendikia Titan Aulia Pujiono. All Rights Reserved.</p>
+        &copy; 2026 Cendikia Titan Aulia Pujiono &bull; Atshura Comics
     </footer>
 
-    <!-- MODAL -->
+    <!-- MODAL MENU MENU -->
     <div class="modal-overlay" id="modal-halaman">
         <div class="modal-content">
-            <h3>Pilih Halaman</h3>
+            <div class="modal-header">
+                <h3>Daftar Halaman</h3>
+                <button class="icon-btn" id="btn-tutup-modal" style="border:none;">
+                    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
             <div class="grid-halaman" id="grid-angka"></div>
-            <button id="btn-tutup-modal">Tutup</button>
         </div>
     </div>
 
-    <!-- SCRIPT -->
+    <!-- SCRIPT UTAMA -->
     <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.min.js"></script>
     <script>
-        // HILANGKAN LOADING
+        // FUNGSI TOAST NOTIFIKASI
+        function showToast(msg) {
+            const toast = document.getElementById('toast-notif');
+            toast.innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
         window.addEventListener('load', () => {
-            const preloader = document.getElementById('preloader');
-            preloader.style.opacity = '0';
-            setTimeout(() => preloader.style.display = 'none', 500);
+            document.getElementById('preloader').style.opacity = '0';
+            setTimeout(() => document.getElementById('preloader').style.display = 'none', 500);
         });
 
         document.addEventListener('DOMContentLoaded', function() {
-            // --- FLIPBOOK ---
-            const infoHalaman = document.getElementById('info-halaman');
             const pages = document.querySelectorAll('.page');
             const totalHalaman = pages.length - 1;
+            const infoHalaman = document.getElementById('info-halaman');
+            const progressBar = document.getElementById('reading-progress');
+            let autoPlayInterval = null;
 
+            // INIT FLIPBOOK
             const pageFlip = new St.PageFlip(document.getElementById('flipbook'), {
-                width: 380, height: 550, showCover: true, usePortrait: true, maxShadowOpacity: 0.2 
+                width: 400, height: 600, showCover: true, usePortrait: true, maxShadowOpacity: 0.3 
             });
             pageFlip.loadFromHTML(pages);
 
+            // FITUR 1: SMART BOOKMARK (Baca LocalStorage)
+            let savedPage = localStorage.getItem('atshura_last_page');
+            if (savedPage !== null) {
+                setTimeout(() => {
+                    pageFlip.flip(parseInt(savedPage));
+                    showToast('Melanjutkan dari halaman terakhir yang dibaca');
+                }, 800); // Jeda sedikit agar tidak berbenturan dengan animasi awal
+            }
+
+            // UPDATE UI SAAT BALIK HALAMAN
             pageFlip.on('flip', (e) => {
-                if (e.data === 0) infoHalaman.innerText = "Sampul Depan";
-                else if (e.data === totalHalaman) infoHalaman.innerText = "Sampul Belakang";
-                else infoHalaman.innerText = `Halaman ${e.data} dari ${totalHalaman - 1}`;
+                let halSekarang = e.data;
+                
+                // Update Teks Bawah
+                infoHalaman.innerText = `${halSekarang} / ${totalHalaman}`;
+                
+                // Update Progress Bar
+                let progress = (halSekarang / totalHalaman) * 100;
+                progressBar.style.width = progress + '%';
+
+                // Simpan ke LocalStorage
+                localStorage.setItem('atshura_last_page', halSekarang);
+
+                // Update warna tombol aktif di Modal
+                document.querySelectorAll('.btn-angka').forEach(btn => btn.classList.remove('active'));
+                const activeBtn = document.getElementById(`btn-hal-${halSekarang}`);
+                if(activeBtn) activeBtn.classList.add('active');
             });
 
+            // TOMBOL NAVIGASI BAWAH
             document.getElementById('btn-prev').addEventListener('click', () => pageFlip.flipPrev());
             document.getElementById('btn-next').addEventListener('click', () => pageFlip.flipNext());
+
+            // FITUR 2: KEYBOARD NAVIGATION (Untuk PC Pro)
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') pageFlip.flipPrev();
+                if (e.key === 'ArrowRight') pageFlip.flipNext();
+            });
             
-            // --- MODAL ---
+            // FITUR 3: AUTO PLAY (Slideshow)
+            const btnAuto = document.getElementById('btn-autoplay');
+            btnAuto.addEventListener('click', () => {
+                if (autoPlayInterval) {
+                    clearInterval(autoPlayInterval);
+                    autoPlayInterval = null;
+                    btnAuto.style.color = "var(--text-main)";
+                    showToast("Mode Baca Otomatis Dimatikan");
+                } else {
+                    showToast("Mode Baca Otomatis Aktif (5 detik)");
+                    btnAuto.style.color = "var(--accent)"; // Indikator aktif
+                    autoPlayInterval = setInterval(() => {
+                        pageFlip.flipNext();
+                    }, 5000); // Ganti halaman tiap 5 detik
+                }
+            });
+
+            // MENU MODAL GENERATOR
             const modal = document.getElementById('modal-halaman');
             const gridAngka = document.getElementById('grid-angka');
             for (let i = 0; i <= totalHalaman; i++) {
                 let btn = document.createElement('button');
                 btn.classList.add('btn-angka');
-                if(i === 0) btn.innerText = "S.D";
-                else if (i === totalHalaman) btn.innerText = "S.B";
+                btn.id = `btn-hal-${i}`;
+                if(i === 0) btn.innerText = "Cover";
+                else if (i === totalHalaman) btn.innerText = "End";
                 else btn.innerText = i;
                 
                 btn.addEventListener('click', () => { pageFlip.flip(i); modal.classList.remove('active'); });
                 gridAngka.appendChild(btn);
             }
+            
             document.getElementById('btn-buka').addEventListener('click', () => modal.classList.add('active'));
             document.getElementById('btn-tutup-modal').addEventListener('click', () => modal.classList.remove('active'));
-            
-            // --- FITUR MODE GELAP & GANTI IKON ---
+            modal.addEventListener('click', (e) => { if(e.target === modal) modal.classList.remove('active'); });
+
+            // FITUR DARK MODE (Menyimpan preferensi)
             const btnDark = document.getElementById('btn-darkmode');
-            const iconTheme = document.getElementById('icon-theme');
-            // Ikon Bulan & Matahari (SVG Paths)
-            const pathMoon = "M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z";
-            const pathSun = "M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42";
-            const circleSun = "<circle cx='12' cy='12' r='5'></circle>";
+            
+            // Cek mode yang disimpan
+            if(localStorage.getItem('atshura_theme') === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+            }
 
             btnDark.addEventListener('click', () => {
-                const isDark = document.body.getAttribute('data-theme') === 'dark';
-                if(isDark) {
+                if(document.body.getAttribute('data-theme') === 'dark') {
                     document.body.removeAttribute('data-theme');
-                    iconTheme.innerHTML = `<path d="${pathMoon}"></path>`; // Kembali ke Ikon Bulan
+                    localStorage.setItem('atshura_theme', 'light');
                 } else {
                     document.body.setAttribute('data-theme', 'dark');
-                    iconTheme.innerHTML = `${circleSun}<path d="${pathSun}"></path>`; // Ubah ke Ikon Matahari
+                    localStorage.setItem('atshura_theme', 'dark');
                 }
             });
 
-            // --- FITUR LAYAR PENUH & GANTI IKON ---
-            const btnFull = document.getElementById('btn-fullscreen');
-            const iconScreen = document.getElementById('icon-screen');
-            const pathMaximize = "M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3";
-            const pathMinimize = "M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3";
-
-            btnFull.addEventListener('click', () => {
+            // FITUR LAYAR PENUH
+            document.getElementById('btn-fullscreen').addEventListener('click', () => {
                 if (!document.fullscreenElement) {
                     document.documentElement.requestFullscreen().catch(err => console.log(err));
-                    iconScreen.innerHTML = `<path d="${pathMinimize}"></path>`; // Ubah ke ikon kecil
                 } else {
                     document.exitFullscreen();
-                    iconScreen.innerHTML = `<path d="${pathMaximize}"></path>`; // Ubah ke ikon besar
                 }
-            });
-
-            // --- FITUR BAGIKAN ---
-            document.getElementById('btn-share').addEventListener('click', async () => {
-                if (navigator.share) {
-                    try { await navigator.share({ title: 'Atshura Comics', url: window.location.href, }); } 
-                    catch (err) {}
-                } else { alert("Salin link ini: " + window.location.href); }
             });
         });
     </script>
