@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Revianchim - Ebook Komik</title>
     
-    <!-- Mengimpor Font 'Poppins' yang Luwes dan Elegan -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     
     <style>
@@ -17,7 +16,6 @@
         }
 
         body {
-            /* Gradasi biru muda (Analogous) yang lembut */
             background: linear-gradient(135deg, #E0F7FA 0%, #C5CAE9 100%);
             color: #1A237E;
             font-family: 'Poppins', sans-serif;
@@ -26,20 +24,33 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            padding: 40px 20px;
+            padding: 30px 20px; /* Padding atas dikurangi sedikit untuk header */
         }
 
-        /* AREA BUKU KOMIK - ELEGAN DENGAN BAYANGAN HALUS */
+        /* --- INDIKATOR HALAMAN DI ATAS BUKU --- */
+        .page-indicator {
+            background-color: rgba(255, 255, 255, 0.7); /* Putih transparan yang elegan */
+            backdrop-filter: blur(5px);
+            padding: 8px 24px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #1A237E;
+            margin-bottom: 15px; /* Jarak antara teks halaman dan buku */
+            box-shadow: 0 4px 10px rgba(26, 35, 126, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        /* AREA BUKU KOMIK */
         .book-container {
             margin-bottom: 30px;
-            /* Sudut melengkung dan bayangan yang sangat lembut */
             border-radius: 16px;
             box-shadow: 0 20px 40px rgba(26, 35, 126, 0.15);
             background-color: #fff;
             overflow: hidden; 
         }
 
-        /* HALAMAN KOMIK */
+        /* HALAMAN KOMIK (KINI BERSIH DARI TEKS) */
         .page {
             background-color: #FFFFFF;
             border-right: 1px solid #f0f0f0;
@@ -47,10 +58,16 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-size: 16px;
-            font-weight: 500;
-            color: #555;
+            /* Teks dihapus dari sini agar siap diisi gambar */
             user-select: none;
+        }
+        
+        /* Contoh styling jika nanti Anda memasukkan gambar */
+        .page img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Memastikan gambar memenuhi halaman tanpa gepeng */
+            pointer-events: none; /* Mencegah gambar tergeser (drag) tak sengaja */
         }
 
         /* AREA NAVIGASI TOMBOL */
@@ -68,9 +85,9 @@
             gap: 15px;
         }
 
-        /* STYLING TOMBOL MELENGKUNG (PILL-SHAPE) */
+        /* STYLING TOMBOL MELENGKUNG */
         button {
-            border-radius: 30px; /* Sudut melengkung sempurna */
+            border-radius: 30px; 
             border: none;
             padding: 14px 24px;
             font-family: 'Poppins', sans-serif;
@@ -82,7 +99,7 @@
         }
 
         button:hover {
-            transform: translateY(-3px); /* Efek melayang saat disentuh */
+            transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
         }
 
@@ -93,18 +110,14 @@
         /* WARNA TOMBOL */
         #btn-prev { background-color: #80DEEA; color: #0A192F; flex: 1; }
         #btn-next { background-color: #9FA8DA; color: #0A192F; flex: 1; }
-        #btn-buka { 
-            background-color: #FF8A65; /* Oranye/Coral lembut (Complementary) */
-            color: #FFFFFF; 
-            width: 100%; 
-        }
+        #btn-buka { background-color: #FF8A65; color: #FFFFFF; width: 100%; }
 
         /* ====== DESAIN MENU POP-UP (MODAL) ====== */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(10, 25, 47, 0.4);
-            backdrop-filter: blur(5px); /* Efek blur di latar belakang */
+            backdrop-filter: blur(5px);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -131,71 +144,57 @@
             transition: transform 0.3s ease;
         }
 
-        .modal-overlay.active .modal-content {
-            transform: translateY(0);
-        }
-
-        .modal-content h3 {
-            margin-bottom: 20px;
-            color: #1A237E;
-            font-weight: 600;
-        }
-
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        .modal-content h3 { margin-bottom: 20px; color: #1A237E; font-weight: 600; }
         .grid-halaman {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 10px;
             margin-bottom: 25px;
+            max-height: 50vh; /* Agar bisa di-scroll jika halamannya banyak sekali nanti */
+            overflow-y: auto;
         }
-
         .btn-angka {
             background-color: #F0F4F8;
             color: #1A237E;
             padding: 10px 0;
-            border-radius: 12px; /* Melengkung halus */
+            border-radius: 12px;
             font-size: 14px;
             box-shadow: none;
         }
-
-        .btn-angka:hover {
-            background-color: #C5CAE9;
-            color: #1A237E;
-        }
-
-        #btn-tutup-modal {
-            background-color: #E0E0E0;
-            color: #333;
-            padding: 10px 30px;
-            border-radius: 20px;
-        }
+        .btn-angka:hover { background-color: #C5CAE9; color: #1A237E; }
+        #btn-tutup-modal { background-color: #E0E0E0; color: #333; padding: 10px 30px; border-radius: 20px; }
     </style>
 </head>
 <body>
 
+    <!-- Indikator Halaman (Dinamis berubah lewat JavaScript) -->
+    <div class="page-indicator" id="info-halaman">Sampul Depan</div>
+
     <!-- Area Flipbook -->
     <div class="book-container" id="flipbook">
-        <!-- Sengaja dibuat 21 Halaman (0 sampai 20) agar sesuai dengan menu -->
-        <div class="page">Sampul (0)</div>
-        <div class="page">Halaman 1</div>
-        <div class="page">Halaman 2</div>
-        <div class="page">Halaman 3</div>
-        <div class="page">Halaman 4</div>
-        <div class="page">Halaman 5</div>
-        <div class="page">Halaman 6</div>
-        <div class="page">Halaman 7</div>
-        <div class="page">Halaman 8</div>
-        <div class="page">Halaman 9</div>
-        <div class="page">Halaman 10</div>
-        <div class="page">Halaman 11</div>
-        <div class="page">Halaman 12</div>
-        <div class="page">Halaman 13</div>
-        <div class="page">Halaman 14</div>
-        <div class="page">Halaman 15</div>
-        <div class="page">Halaman 16</div>
-        <div class="page">Halaman 17</div>
-        <div class="page">Halaman 18</div>
-        <div class="page">Halaman 19</div>
-        <div class="page">Sampul Belakang (20)</div>
+        <!-- Teks di dalam div ini dihapus, nanti Anda tinggal isi dengan tag <img> -->
+        <div class="page"></div> <!-- 0: Sampul -->
+        <div class="page"></div> <!-- 1 -->
+        <div class="page"></div> <!-- 2 -->
+        <div class="page"></div> <!-- 3 -->
+        <div class="page"></div> <!-- 4 -->
+        <div class="page"></div> <!-- 5 -->
+        <div class="page"></div> <!-- 6 -->
+        <div class="page"></div> <!-- 7 -->
+        <div class="page"></div> <!-- 8 -->
+        <div class="page"></div> <!-- 9 -->
+        <div class="page"></div> <!-- 10 -->
+        <div class="page"></div> <!-- 11 -->
+        <div class="page"></div> <!-- 12 -->
+        <div class="page"></div> <!-- 13 -->
+        <div class="page"></div> <!-- 14 -->
+        <div class="page"></div> <!-- 15 -->
+        <div class="page"></div> <!-- 16 -->
+        <div class="page"></div> <!-- 17 -->
+        <div class="page"></div> <!-- 18 -->
+        <div class="page"></div> <!-- 19 -->
+        <div class="page"></div> <!-- 20: Sampul Belakang -->
     </div>
 
     <!-- Area Navigasi Utama -->
@@ -212,7 +211,7 @@
         <div class="modal-content">
             <h3>Pilih Halaman</h3>
             <div class="grid-halaman" id="grid-angka">
-                <!-- Angka 0-20 akan dimunculkan oleh JavaScript di sini -->
+                <!-- Angka 0-20 dibuat oleh JavaScript -->
             </div>
             <button id="btn-tutup-modal">Tutup</button>
         </div>
@@ -222,17 +221,33 @@
     <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            const infoHalaman = document.getElementById('info-halaman');
+            const totalHalaman = document.querySelectorAll('.page').length - 1; // -1 karena mulai dari 0
+
             // 1. Konfigurasi Flipbook
             const pageFlip = new St.PageFlip(document.getElementById('flipbook'), {
                 width: 380,
                 height: 550,
                 showCover: true,
                 usePortrait: true,
-                maxShadowOpacity: 0.2 // Dibuat lebih tipis agar elegan
+                maxShadowOpacity: 0.2 
             });
 
-            // Muat semua elemen HTML sebagai halaman
             pageFlip.loadFromHTML(document.querySelectorAll('.page'));
+
+            // --- FUNGSI UPDATE INDIKATOR HALAMAN DI ATAS BUKU ---
+            // Event 'flip' bawaan library yang berjalan setiap kali halaman selesai dibalik
+            pageFlip.on('flip', (e) => {
+                const halSekarang = e.data; // e.data berisi nomor halaman yang sedang aktif
+
+                if (halSekarang === 0) {
+                    infoHalaman.innerText = "Sampul Depan";
+                } else if (halSekarang === totalHalaman) {
+                    infoHalaman.innerText = "Sampul Belakang";
+                } else {
+                    infoHalaman.innerText = `Halaman ${halSekarang} dari ${totalHalaman - 1}`;
+                }
+            });
 
             // 2. Tombol Navigasi Kiri Kanan
             document.getElementById('btn-prev').addEventListener('click', () => {
@@ -249,36 +264,27 @@
             const btnTutup = document.getElementById('btn-tutup-modal');
             const gridAngka = document.getElementById('grid-angka');
 
-            // Fungsi Membuat Tombol Angka 0 sampai 20
-            for (let i = 0; i <= 20; i++) {
+            for (let i = 0; i <= totalHalaman; i++) {
                 let btn = document.createElement('button');
                 btn.classList.add('btn-angka');
-                btn.innerText = i;
                 
-                // Jika tombol angka ditekan
+                // Beri label khusus untuk sampul di menu
+                if(i === 0) btn.innerText = "S.D"; // Sampul Depan
+                else if (i === totalHalaman) btn.innerText = "S.B"; // Sampul Belakang
+                else btn.innerText = i;
+                
                 btn.addEventListener('click', () => {
-                    pageFlip.flip(i); // Lompat ke halaman sesuai angka
-                    modal.classList.remove('active'); // Tutup menu
+                    pageFlip.flip(i);
+                    modal.classList.remove('active');
                 });
                 
                 gridAngka.appendChild(btn);
             }
 
-            // Tampilkan menu saat tombol "Buka Halaman" ditekan
-            btnBuka.addEventListener('click', () => {
-                modal.classList.add('active');
-            });
-
-            // Tutup menu saat tombol "Tutup" ditekan
-            btnTutup.addEventListener('click', () => {
-                modal.classList.remove('active');
-            });
-
-            // Tutup menu jika pengguna mengklik di luar area putih (di area gelap)
+            btnBuka.addEventListener('click', () => modal.classList.add('active') );
+            btnTutup.addEventListener('click', () => modal.classList.remove('active') );
             modal.addEventListener('click', (e) => {
-                if(e.target === modal) {
-                    modal.classList.remove('active');
-                }
+                if(e.target === modal) modal.classList.remove('active');
             });
         });
     </script>
