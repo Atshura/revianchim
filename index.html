@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Revianchim - Ebook Komik Eksklusif</title>
+    <title>Revianchim - Ebook Komik</title>
     
-    <!-- Mengimpor Font Modern Minimalis dari Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- Mengimpor Font 'Poppins' yang Luwes dan Elegan -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     
     <style>
-        /* RESET & BASE TEMA */
+        /* RESET & TEMA DASAR */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -17,10 +17,10 @@
         }
 
         body {
-            /* Gradasi biru muda yang elegan */
+            /* Gradasi biru muda (Analogous) yang lembut */
             background: linear-gradient(135deg, #E0F7FA 0%, #C5CAE9 100%);
-            color: #0A192F; /* Biru sangat gelap untuk teks, lebih elegan dari hitam */
-            font-family: 'Montserrat', sans-serif;
+            color: #1A237E;
+            font-family: 'Poppins', sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -29,112 +29,176 @@
             padding: 40px 20px;
         }
 
-        /* AREA BUKU KOMIK - SUDUT TAJAM & BAYANGAN KONTRAST */
+        /* AREA BUKU KOMIK - ELEGAN DENGAN BAYANGAN HALUS */
         .book-container {
-            margin-bottom: 40px;
-            /* Sudut tajam, garis tegas, dan bayangan blok (solid shadow) */
-            border: 3px solid #0A192F;
-            box-shadow: 12px 12px 0px rgba(10, 25, 47, 0.9);
+            margin-bottom: 30px;
+            /* Sudut melengkung dan bayangan yang sangat lembut */
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(26, 35, 126, 0.15);
             background-color: #fff;
-            transition: transform 0.3s ease;
-        }
-        
-        .book-container:hover {
-            transform: translate(-2px, -2px);
-            box-shadow: 14px 14px 0px rgba(10, 25, 47, 0.9);
+            overflow: hidden; 
         }
 
         /* HALAMAN KOMIK */
         .page {
             background-color: #FFFFFF;
-            border-right: 1px solid #E0E0E0;
+            border-right: 1px solid #f0f0f0;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-size: 18px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #555;
             user-select: none;
-            overflow: hidden;
         }
 
         /* AREA NAVIGASI TOMBOL */
         .nav-container {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 15px;
             width: 100%;
-            max-width: 420px;
+            max-width: 380px;
         }
 
         .nav-top {
             display: flex;
             justify-content: space-between;
-            gap: 16px;
+            gap: 15px;
         }
 
-        /* STYLING TOMBOL MODERN (SUDUT 90 DERAJAT) */
+        /* STYLING TOMBOL MELENGKUNG (PILL-SHAPE) */
         button {
-            border-radius: 0; /* Menghilangkan lengkungan (sudut-sudut tajam) */
-            border: 2px solid #0A192F;
-            padding: 16px 20px;
-            font-family: 'Montserrat', sans-serif;
+            border-radius: 30px; /* Sudut melengkung sempurna */
+            border: none;
+            padding: 14px 24px;
+            font-family: 'Poppins', sans-serif;
             font-weight: 600;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
+            font-size: 15px;
             cursor: pointer;
-            position: relative;
-            transition: all 0.2s ease;
-            box-shadow: 4px 4px 0px rgba(10, 25, 47, 1);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
         }
 
         button:hover {
-            transform: translate(-2px, -2px);
-            box-shadow: 6px 6px 0px rgba(10, 25, 47, 1);
+            transform: translateY(-3px); /* Efek melayang saat disentuh */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
         }
 
         button:active {
-            transform: translate(2px, 2px);
-            box-shadow: 0px 0px 0px rgba(10, 25, 47, 1);
+            transform: translateY(1px);
         }
 
-        /* WARNA TOMBOL - TEORI WARNA BERSEBELAHAN & KONTRAST */
-        #btn-prev {
-            background-color: #4DD0E1; /* Analogous 1: Cyan/Teal */
-            color: #0A192F;
-            flex: 1;
+        /* WARNA TOMBOL */
+        #btn-prev { background-color: #80DEEA; color: #0A192F; flex: 1; }
+        #btn-next { background-color: #9FA8DA; color: #0A192F; flex: 1; }
+        #btn-buka { 
+            background-color: #FF8A65; /* Oranye/Coral lembut (Complementary) */
+            color: #FFFFFF; 
+            width: 100%; 
         }
 
-        #btn-next {
-            background-color: #9FA8DA; /* Analogous 2: Periwinkle */
-            color: #0A192F;
-            flex: 1;
+        /* ====== DESAIN MENU POP-UP (MODAL) ====== */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(10, 25, 47, 0.4);
+            backdrop-filter: blur(5px); /* Efek blur di latar belakang */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
         }
 
-        #btn-buka {
-            background-color: #FF6D00; /* Complementary Contrast: Jingga Elegan */
-            color: #FFFFFF;
-            width: 100%;
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
         }
 
+        .modal-content {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 24px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            text-align: center;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-content h3 {
+            margin-bottom: 20px;
+            color: #1A237E;
+            font-weight: 600;
+        }
+
+        .grid-halaman {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .btn-angka {
+            background-color: #F0F4F8;
+            color: #1A237E;
+            padding: 10px 0;
+            border-radius: 12px; /* Melengkung halus */
+            font-size: 14px;
+            box-shadow: none;
+        }
+
+        .btn-angka:hover {
+            background-color: #C5CAE9;
+            color: #1A237E;
+        }
+
+        #btn-tutup-modal {
+            background-color: #E0E0E0;
+            color: #333;
+            padding: 10px 30px;
+            border-radius: 20px;
+        }
     </style>
 </head>
 <body>
 
     <!-- Area Flipbook -->
     <div class="book-container" id="flipbook">
-        <div class="page">Sampul Depan</div>
+        <!-- Sengaja dibuat 21 Halaman (0 sampai 20) agar sesuai dengan menu -->
+        <div class="page">Sampul (0)</div>
         <div class="page">Halaman 1</div>
         <div class="page">Halaman 2</div>
         <div class="page">Halaman 3</div>
         <div class="page">Halaman 4</div>
-        <div class="page">Sampul Belakang</div>
+        <div class="page">Halaman 5</div>
+        <div class="page">Halaman 6</div>
+        <div class="page">Halaman 7</div>
+        <div class="page">Halaman 8</div>
+        <div class="page">Halaman 9</div>
+        <div class="page">Halaman 10</div>
+        <div class="page">Halaman 11</div>
+        <div class="page">Halaman 12</div>
+        <div class="page">Halaman 13</div>
+        <div class="page">Halaman 14</div>
+        <div class="page">Halaman 15</div>
+        <div class="page">Halaman 16</div>
+        <div class="page">Halaman 17</div>
+        <div class="page">Halaman 18</div>
+        <div class="page">Halaman 19</div>
+        <div class="page">Sampul Belakang (20)</div>
     </div>
 
-    <!-- Area Navigasi 3 Tombol -->
+    <!-- Area Navigasi Utama -->
     <div class="nav-container">
         <div class="nav-top">
             <button id="btn-prev">⬅ Prev</button>
@@ -143,21 +207,34 @@
         <button id="btn-buka">📖 Buka Halaman</button>
     </div>
 
+    <!-- Menu Pop-up (Modal) untuk Memilih Halaman -->
+    <div class="modal-overlay" id="modal-halaman">
+        <div class="modal-content">
+            <h3>Pilih Halaman</h3>
+            <div class="grid-halaman" id="grid-angka">
+                <!-- Angka 0-20 akan dimunculkan oleh JavaScript di sini -->
+            </div>
+            <button id="btn-tutup-modal">Tutup</button>
+        </div>
+    </div>
+
     <!-- Script Library StPageFlip -->
     <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Konfigurasi Flipbook
+            // 1. Konfigurasi Flipbook
             const pageFlip = new St.PageFlip(document.getElementById('flipbook'), {
-                width: 380, // Dibuat sedikit lebih lebar agar proporsional
+                width: 380,
                 height: 550,
                 showCover: true,
                 usePortrait: true,
-                maxShadowOpacity: 0.3 // Bayangan lipatan buku yang elegan
+                maxShadowOpacity: 0.2 // Dibuat lebih tipis agar elegan
             });
 
+            // Muat semua elemen HTML sebagai halaman
             pageFlip.loadFromHTML(document.querySelectorAll('.page'));
 
+            // 2. Tombol Navigasi Kiri Kanan
             document.getElementById('btn-prev').addEventListener('click', () => {
                 pageFlip.flipPrev();
             });
@@ -166,10 +243,41 @@
                 pageFlip.flipNext();
             });
             
-            document.getElementById('btn-buka').addEventListener('click', () => {
-                let hal = prompt("Masukkan nomor halaman yang dituju (0 untuk sampul awal):");
-                if(hal !== null && hal !== "") {
-                    pageFlip.flip(parseInt(hal)); 
+            // 3. Logika Menu Modal (Buka Halaman)
+            const modal = document.getElementById('modal-halaman');
+            const btnBuka = document.getElementById('btn-buka');
+            const btnTutup = document.getElementById('btn-tutup-modal');
+            const gridAngka = document.getElementById('grid-angka');
+
+            // Fungsi Membuat Tombol Angka 0 sampai 20
+            for (let i = 0; i <= 20; i++) {
+                let btn = document.createElement('button');
+                btn.classList.add('btn-angka');
+                btn.innerText = i;
+                
+                // Jika tombol angka ditekan
+                btn.addEventListener('click', () => {
+                    pageFlip.flip(i); // Lompat ke halaman sesuai angka
+                    modal.classList.remove('active'); // Tutup menu
+                });
+                
+                gridAngka.appendChild(btn);
+            }
+
+            // Tampilkan menu saat tombol "Buka Halaman" ditekan
+            btnBuka.addEventListener('click', () => {
+                modal.classList.add('active');
+            });
+
+            // Tutup menu saat tombol "Tutup" ditekan
+            btnTutup.addEventListener('click', () => {
+                modal.classList.remove('active');
+            });
+
+            // Tutup menu jika pengguna mengklik di luar area putih (di area gelap)
+            modal.addEventListener('click', (e) => {
+                if(e.target === modal) {
+                    modal.classList.remove('active');
                 }
             });
         });
