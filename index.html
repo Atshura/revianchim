@@ -3,288 +3,291 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Revianchim - Ebook Komik</title>
+    <!-- META TAGS UNTUK SEO & PREVIEW WHATSAPP/SOSMED -->
+    <meta property="og:title" content="Revianchim - Baca Komik Eksklusif">
+    <meta property="og:description" content="Baca komik terbaru dari Atshura Comics.">
+    <meta property="og:image" content="LINK_GAMBAR_COVER_ANDA_DI_SINI.jpg">
     
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>Revianchim - Ebook Komik</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* RESET & TEMA DASAR */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        /* --- CSS VARIABLES UNTUK MODE TERANG & GELAP --- */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #E0F7FA 0%, #C5CAE9 100%);
+            --text-main: #1A237E;
+            --book-shadow: rgba(26, 35, 126, 0.15);
+            --btn-prev: #80DEEA;
+            --btn-next: #9FA8DA;
+            --btn-text: #0A192F;
+            --modal-bg: #ffffff;
         }
+
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #121212 0%, #1e1e24 100%);
+            --text-main: #E0F7FA;
+            --book-shadow: rgba(0, 0, 0, 0.5);
+            --btn-prev: #37474F;
+            --btn-next: #455A64;
+            --btn-text: #E0E0E0;
+            --modal-bg: #2C2C2C;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            background: linear-gradient(135deg, #E0F7FA 0%, #C5CAE9 100%);
-            color: #1A237E;
+            background: var(--bg-gradient);
+            color: var(--text-main);
             font-family: 'Poppins', sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             min-height: 100vh;
-            padding: 30px 20px; /* Padding atas dikurangi sedikit untuk header */
+            transition: background 0.5s ease;
         }
 
-        /* --- INDIKATOR HALAMAN DI ATAS BUKU --- */
+        /* --- PRELOADER (LAYAR LOADING) --- */
+        #preloader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #E0F7FA; z-index: 9999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.5s ease;
+        }
+        .loader-spinner {
+            border: 5px solid #f3f3f3; border-top: 5px solid #FF8A65;
+            border-radius: 50%; width: 50px; height: 50px;
+            animation: spin 1s linear infinite; margin-bottom: 15px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- TOP BAR (TOOLS) --- */
+        .top-tools {
+            width: 100%; max-width: 500px;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 20px;
+        }
+        .tool-btn {
+            background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.3); color: var(--text-main);
+            padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: 600;
+        }
+
+        /* --- INDIKATOR & BUKU --- */
+        .main-content {
+            display: flex; flex-direction: column; align-items: center;
+            padding: 10px 20px 40px; flex-grow: 1;
+        }
         .page-indicator {
-            background-color: rgba(255, 255, 255, 0.7); /* Putih transparan yang elegan */
-            backdrop-filter: blur(5px);
-            padding: 8px 24px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 14px;
-            color: #1A237E;
-            margin-bottom: 15px; /* Jarak antara teks halaman dan buku */
-            box-shadow: 0 4px 10px rgba(26, 35, 126, 0.05);
-            transition: all 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.4);
+            padding: 8px 24px; border-radius: 20px; font-weight: 600; font-size: 14px;
+            margin-bottom: 15px; box-shadow: 0 4px 10px var(--book-shadow);
         }
-
-        /* AREA BUKU KOMIK */
         .book-container {
-            margin-bottom: 30px;
-            border-radius: 16px;
-            box-shadow: 0 20px 40px rgba(26, 35, 126, 0.15);
-            background-color: #fff;
-            overflow: hidden; 
+            margin-bottom: 30px; border-radius: 16px;
+            box-shadow: 0 20px 40px var(--book-shadow); background-color: #fff;
         }
+        .page { background-color: #FFFFFF; display: flex; justify-content: center; align-items: center; user-select: none; }
+        .page img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
 
-        /* HALAMAN KOMIK (KINI BERSIH DARI TEKS) */
-        .page {
-            background-color: #FFFFFF;
-            border-right: 1px solid #f0f0f0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            /* Teks dihapus dari sini agar siap diisi gambar */
-            user-select: none;
-        }
+        /* --- NAVIGASI BAWAH --- */
+        .nav-container { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 380px; }
+        .nav-top { display: flex; justify-content: space-between; gap: 15px; }
         
-        /* Contoh styling jika nanti Anda memasukkan gambar */
-        .page img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Memastikan gambar memenuhi halaman tanpa gepeng */
-            pointer-events: none; /* Mencegah gambar tergeser (drag) tak sengaja */
+        button.nav-btn {
+            border-radius: 30px; border: none; padding: 14px 24px;
+            font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 15px; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: all 0.3s ease;
         }
-
-        /* AREA NAVIGASI TOMBOL */
-        .nav-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            width: 100%;
-            max-width: 380px;
-        }
-
-        .nav-top {
-            display: flex;
-            justify-content: space-between;
-            gap: 15px;
-        }
-
-        /* STYLING TOMBOL MELENGKUNG */
-        button {
-            border-radius: 30px; 
-            border: none;
-            padding: 14px 24px;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            font-size: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        }
-
-        button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-        }
-
-        button:active {
-            transform: translateY(1px);
-        }
-
-        /* WARNA TOMBOL */
-        #btn-prev { background-color: #80DEEA; color: #0A192F; flex: 1; }
-        #btn-next { background-color: #9FA8DA; color: #0A192F; flex: 1; }
+        button.nav-btn:hover { transform: translateY(-3px); }
+        #btn-prev { background-color: var(--btn-prev); color: var(--btn-text); flex: 1; }
+        #btn-next { background-color: var(--btn-next); color: var(--btn-text); flex: 1; }
         #btn-buka { background-color: #FF8A65; color: #FFFFFF; width: 100%; }
 
-        /* ====== DESAIN MENU POP-UP (MODAL) ====== */
+        /* --- FITUR SOSIAL & FOOTER --- */
+        .social-share { margin-top: 30px; text-align: center; }
+        #btn-share {
+            background: linear-gradient(45deg, #1A237E, #3949AB); color: white;
+            padding: 10px 25px; border-radius: 25px; border: none; font-weight: 600; cursor: pointer;
+        }
+        footer {
+            margin-top: auto; padding: 20px; text-align: center; font-size: 12px;
+            color: var(--text-main); opacity: 0.8;
+        }
+
+        /* --- MODAL (POPUP) --- */
         .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(10, 25, 47, 0.4);
-            backdrop-filter: blur(5px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-            z-index: 1000;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 1000;
         }
-
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-content {
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 24px;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
-            text-align: center;
-            transform: translateY(20px);
-            transition: transform 0.3s ease;
+            background: var(--modal-bg); color: var(--text-main);
+            padding: 30px; border-radius: 24px; width: 90%; max-width: 400px; text-align: center;
         }
-
-        .modal-overlay.active .modal-content { transform: translateY(0); }
-        .modal-content h3 { margin-bottom: 20px; color: #1A237E; font-weight: 600; }
-        .grid-halaman {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
-            margin-bottom: 25px;
-            max-height: 50vh; /* Agar bisa di-scroll jika halamannya banyak sekali nanti */
-            overflow-y: auto;
-        }
-        .btn-angka {
-            background-color: #F0F4F8;
-            color: #1A237E;
-            padding: 10px 0;
-            border-radius: 12px;
-            font-size: 14px;
-            box-shadow: none;
-        }
-        .btn-angka:hover { background-color: #C5CAE9; color: #1A237E; }
-        #btn-tutup-modal { background-color: #E0E0E0; color: #333; padding: 10px 30px; border-radius: 20px; }
+        .grid-halaman { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 20px 0; max-height: 50vh; overflow-y: auto; }
+        .btn-angka { background: rgba(128,128,128,0.2); color: var(--text-main); padding: 10px 0; border-radius: 12px; border: none; font-weight:600; cursor:pointer;}
+        #btn-tutup-modal { background: #FF5252; color: white; padding: 10px 30px; border-radius: 20px; border:none; cursor:pointer;}
     </style>
 </head>
 <body>
 
-    <!-- Indikator Halaman (Dinamis berubah lewat JavaScript) -->
-    <div class="page-indicator" id="info-halaman">Sampul Depan</div>
-
-    <!-- Area Flipbook -->
-    <div class="book-container" id="flipbook">
-        <!-- Teks di dalam div ini dihapus, nanti Anda tinggal isi dengan tag <img> -->
-        <div class="page"></div> <!-- 0: Sampul -->
-        <div class="page"></div> <!-- 1 -->
-        <div class="page"></div> <!-- 2 -->
-        <div class="page"></div> <!-- 3 -->
-        <div class="page"></div> <!-- 4 -->
-        <div class="page"></div> <!-- 5 -->
-        <div class="page"></div> <!-- 6 -->
-        <div class="page"></div> <!-- 7 -->
-        <div class="page"></div> <!-- 8 -->
-        <div class="page"></div> <!-- 9 -->
-        <div class="page"></div> <!-- 10 -->
-        <div class="page"></div> <!-- 11 -->
-        <div class="page"></div> <!-- 12 -->
-        <div class="page"></div> <!-- 13 -->
-        <div class="page"></div> <!-- 14 -->
-        <div class="page"></div> <!-- 15 -->
-        <div class="page"></div> <!-- 16 -->
-        <div class="page"></div> <!-- 17 -->
-        <div class="page"></div> <!-- 18 -->
-        <div class="page"></div> <!-- 19 -->
-        <div class="page"></div> <!-- 20: Sampul Belakang -->
+    <!-- LAYAR LOADING -->
+    <div id="preloader">
+        <div class="loader-spinner"></div>
+        <h3 style="color:#1A237E;">Memuat Komik...</h3>
     </div>
 
-    <!-- Area Navigasi Utama -->
-    <div class="nav-container">
-        <div class="nav-top">
-            <button id="btn-prev">⬅ Prev</button>
-            <button id="btn-next">Next ➡</button>
+    <!-- TOP BAR: FULLSCREEN & DARK MODE -->
+    <div class="top-tools">
+        <button class="tool-btn" id="btn-darkmode">🌙 Mode Gelap</button>
+        <button class="tool-btn" id="btn-fullscreen">🔲 Layar Penuh</button>
+    </div>
+
+    <div class="main-content">
+        <!-- INDIKATOR HALAMAN -->
+        <div class="page-indicator" id="info-halaman">Sampul Depan</div>
+
+        <!-- FLIPBOOK -->
+        <div class="book-container" id="flipbook">
+            <!-- Nanti isi div ini dengan <img src="..."> -->
+            <div class="page"></div>
+            <div class="page"></div>
+            <div class="page"></div>
+            <div class="page"></div>
+            <div class="page"></div>
+            <div class="page"></div>
+            <div class="page"></div>
+            <div class="page"></div>
+            <div class="page"></div>
+            <div class="page"></div>
+            <div class="page"></div>
         </div>
-        <button id="btn-buka">📖 Buka Halaman</button>
+
+        <!-- NAVIGASI BAWAH -->
+        <div class="nav-container">
+            <div class="nav-top">
+                <button class="nav-btn" id="btn-prev">⬅ Prev</button>
+                <button class="nav-btn" id="btn-next">Next ➡</button>
+            </div>
+            <button class="nav-btn" id="btn-buka">📖 Buka Halaman</button>
+        </div>
+
+        <!-- TOMBOL SHARE -->
+        <div class="social-share">
+            <button id="btn-share">🔗 Bagikan Komik Ini</button>
+        </div>
+        
+        <!-- TEMPAT KOMENTAR DISQUS NANTINYA (Biarkan kosong dulu) -->
+        <div id="disqus_thread" style="margin-top: 40px; width: 100%; max-width: 500px;"></div>
     </div>
 
-    <!-- Menu Pop-up (Modal) untuk Memilih Halaman -->
+    <!-- FOOTER PROFESIONAL -->
+    <footer>
+        <p><strong>Atshura Comics</strong></p>
+        <p>&copy; 2026 Cendikia Titan Aulia Pujiono. All Rights Reserved.</p>
+    </footer>
+
+    <!-- MODAL MENU HALAMAN -->
     <div class="modal-overlay" id="modal-halaman">
         <div class="modal-content">
             <h3>Pilih Halaman</h3>
-            <div class="grid-halaman" id="grid-angka">
-                <!-- Angka 0-20 dibuat oleh JavaScript -->
-            </div>
+            <div class="grid-halaman" id="grid-angka"></div>
             <button id="btn-tutup-modal">Tutup</button>
         </div>
     </div>
 
-    <!-- Script Library StPageFlip -->
+    <!-- SCRIPT -->
     <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.min.js"></script>
     <script>
+        // HILANGKAN LOADING SCREEN SETELAH SEMUA DIMUAT
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            preloader.style.opacity = '0';
+            setTimeout(() => preloader.style.display = 'none', 500);
+        });
+
         document.addEventListener('DOMContentLoaded', function() {
+            // --- SETUP FLIPBOOK ---
             const infoHalaman = document.getElementById('info-halaman');
-            const totalHalaman = document.querySelectorAll('.page').length - 1; // -1 karena mulai dari 0
+            const pages = document.querySelectorAll('.page');
+            const totalHalaman = pages.length - 1;
 
-            // 1. Konfigurasi Flipbook
             const pageFlip = new St.PageFlip(document.getElementById('flipbook'), {
-                width: 380,
-                height: 550,
-                showCover: true,
-                usePortrait: true,
-                maxShadowOpacity: 0.2 
+                width: 380, height: 550, showCover: true, usePortrait: true, maxShadowOpacity: 0.2 
             });
+            pageFlip.loadFromHTML(pages);
 
-            pageFlip.loadFromHTML(document.querySelectorAll('.page'));
-
-            // --- FUNGSI UPDATE INDIKATOR HALAMAN DI ATAS BUKU ---
-            // Event 'flip' bawaan library yang berjalan setiap kali halaman selesai dibalik
             pageFlip.on('flip', (e) => {
-                const halSekarang = e.data; // e.data berisi nomor halaman yang sedang aktif
-
-                if (halSekarang === 0) {
-                    infoHalaman.innerText = "Sampul Depan";
-                } else if (halSekarang === totalHalaman) {
-                    infoHalaman.innerText = "Sampul Belakang";
-                } else {
-                    infoHalaman.innerText = `Halaman ${halSekarang} dari ${totalHalaman - 1}`;
-                }
+                if (e.data === 0) infoHalaman.innerText = "Sampul Depan";
+                else if (e.data === totalHalaman) infoHalaman.innerText = "Sampul Belakang";
+                else infoHalaman.innerText = `Halaman ${e.data} dari ${totalHalaman - 1}`;
             });
 
-            // 2. Tombol Navigasi Kiri Kanan
-            document.getElementById('btn-prev').addEventListener('click', () => {
-                pageFlip.flipPrev();
-            });
-
-            document.getElementById('btn-next').addEventListener('click', () => {
-                pageFlip.flipNext();
-            });
+            document.getElementById('btn-prev').addEventListener('click', () => pageFlip.flipPrev());
+            document.getElementById('btn-next').addEventListener('click', () => pageFlip.flipNext());
             
-            // 3. Logika Menu Modal (Buka Halaman)
+            // --- SETUP MODAL ---
             const modal = document.getElementById('modal-halaman');
-            const btnBuka = document.getElementById('btn-buka');
-            const btnTutup = document.getElementById('btn-tutup-modal');
             const gridAngka = document.getElementById('grid-angka');
 
             for (let i = 0; i <= totalHalaman; i++) {
                 let btn = document.createElement('button');
                 btn.classList.add('btn-angka');
-                
-                // Beri label khusus untuk sampul di menu
-                if(i === 0) btn.innerText = "S.D"; // Sampul Depan
-                else if (i === totalHalaman) btn.innerText = "S.B"; // Sampul Belakang
+                if(i === 0) btn.innerText = "S.D";
+                else if (i === totalHalaman) btn.innerText = "S.B";
                 else btn.innerText = i;
                 
                 btn.addEventListener('click', () => {
                     pageFlip.flip(i);
                     modal.classList.remove('active');
                 });
-                
                 gridAngka.appendChild(btn);
             }
 
-            btnBuka.addEventListener('click', () => modal.classList.add('active') );
-            btnTutup.addEventListener('click', () => modal.classList.remove('active') );
-            modal.addEventListener('click', (e) => {
-                if(e.target === modal) modal.classList.remove('active');
+            document.getElementById('btn-buka').addEventListener('click', () => modal.classList.add('active'));
+            document.getElementById('btn-tutup-modal').addEventListener('click', () => modal.classList.remove('active'));
+            
+            // --- FITUR MODE GELAP ---
+            const btnDark = document.getElementById('btn-darkmode');
+            btnDark.addEventListener('click', () => {
+                const isDark = document.body.getAttribute('data-theme') === 'dark';
+                if(isDark) {
+                    document.body.removeAttribute('data-theme');
+                    btnDark.innerText = "🌙 Mode Gelap";
+                } else {
+                    document.body.setAttribute('data-theme', 'dark');
+                    btnDark.innerText = "☀️ Mode Terang";
+                }
+            });
+
+            // --- FITUR LAYAR PENUH (FULLSCREEN) ---
+            const btnFull = document.getElementById('btn-fullscreen');
+            btnFull.addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(err => console.log(err));
+                    btnFull.innerText = "🔲 Keluar Fullscreen";
+                } else {
+                    document.exitFullscreen();
+                    btnFull.innerText = "🔲 Layar Penuh";
+                }
+            });
+
+            // --- FITUR BAGIKAN (WEB SHARE API) ---
+            const btnShare = document.getElementById('btn-share');
+            btnShare.addEventListener('click', async () => {
+                if (navigator.share) {
+                    try {
+                        await navigator.share({
+                            title: 'Revianchim Comics',
+                            text: 'Baca komik seru terbaru dari Atshura Comics!',
+                            url: window.location.href,
+                        });
+                    } catch (err) { console.log('Batal membagikan'); }
+                } else {
+                    alert("Salin link ini untuk membagikan: " + window.location.href);
+                }
             });
         });
     </script>
