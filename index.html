@@ -32,17 +32,10 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             transition: background-color 0.3s ease;
-            /* Menggunakan dvh agar sesuai dengan tinggi layar HP saat URL bar muncul/hilang */
-            height: 100dvh; 
+            height: 100vh;
+            height: 100dvh;
             display: flex; flex-direction: column; overflow: hidden;
         }
-
-        /* === TAMPILAN IMMERSIVE (UI HILANG) === */
-        body.ui-hidden header { transform: translateY(-100%); opacity: 0; pointer-events: none; }
-        body.ui-hidden .bottom-nav { transform: translate(-50%, 150%); opacity: 0; pointer-events: none; }
-        body.ui-hidden .progress-container { opacity: 0; }
-        body.ui-hidden .reader-area { padding: 0; }
-        body.ui-hidden .book-container { border-radius: 0; max-width: 100vw; }
 
         /* HEADER */
         header {
@@ -51,7 +44,6 @@
             border-bottom: 1px solid var(--glass-border);
             display: flex; justify-content: space-between; align-items: center;
             padding: 12px 20px; box-shadow: var(--shadow-glass);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .brand { font-weight: 700; font-size: 16px; display: flex; align-items: center; gap: 6px;}
         .brand-badge { background: var(--accent); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; letter-spacing: 1px;}
@@ -64,33 +56,31 @@
         .icon-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
         .icon-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
 
-        .progress-container { position: fixed; top: 59px; left: 0; width: 100%; height: 2px; background: transparent; z-index: 99; transition: opacity 0.3s; }
+        .progress-container { position: fixed; top: 59px; left: 0; width: 100%; height: 2px; background: transparent; z-index: 99; }
         .progress-bar { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s ease; }
 
-        /* AREA BACA */
+        /* AREA BACA (Stabil, tidak ada auto-hide UI yang mengganggu) */
         .reader-area {
             flex-grow: 1; display: flex; justify-content: center; align-items: center;
-            padding: 70px 0 80px 0; width: 100%; height: 100dvh;
-            transition: all 0.3s ease;
+            padding: 70px 10px 80px 10px; width: 100%; height: 100dvh;
         }
         
         .book-container {
-            width: 100%; height: 100%; max-width: 600px;
-            background-color: var(--bg-color); transition: all 0.3s ease;
+            width: 100%; height: 100%; max-width: 550px;
+            background-color: var(--bg-color);
         }
 
         .page { background-color: #FFF; display: flex; justify-content: center; align-items: center; user-select: none; font-weight: bold; font-size: 20px; color: #ccc;}
         .page img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
 
-        /* BOTTOM NAV - DIPERBAIKI AGAR TIDAK BERTUMPUK */
+        /* BOTTOM NAV - SELALU MUNCUL STABIL DI BAWAH */
         .bottom-nav {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
             background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--glass-border); border-radius: 50px;
-            display: flex; align-items: center; justify-content: space-between; padding: 6px 6px;
+            display: flex; align-items: center; justify-content: space-between; padding: 6px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.15); z-index: 100;
-            width: 90%; max-width: 320px; /* Lebar dibatasi agar rapi di HP */
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 90%; max-width: 320px;
         }
 
         .nav-btn {
@@ -100,14 +90,12 @@
         .nav-btn.primary { background: var(--accent); color: white; width: auto; padding: 0 16px; border-radius: 20px; font-weight: 600; font-size: 13px; gap: 6px;}
         .nav-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none; }
         
-        /* FIX BUG: Teks tidak akan wrap/turun ke bawah lagi */
         .page-info { 
             font-size: 13px; font-weight: 600; color: var(--text-main); 
-            white-space: nowrap; /* Mencegah teks bertumpuk ke bawah */
-            text-align: center; font-variant-numeric: tabular-nums;
+            white-space: nowrap; text-align: center; font-variant-numeric: tabular-nums;
         }
 
-        /* MODAL DLL */
+        /* MODAL */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: flex-end; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 1000; }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-content { background: var(--bg-color); color: var(--text-main); width: 100%; max-width: 500px; padding: 24px; border-radius: 20px 20px 0 0; transform: translateY(100%); transition: transform 0.3s; }
@@ -122,22 +110,18 @@
     <header>
         <div class="brand">Atshura <span class="brand-badge">PRO</span></div>
         <div class="header-tools">
-            <!-- Tombol Mode Manga (Kanan ke Kiri) -->
             <button class="icon-btn" id="btn-rtl" title="Mode Manga (Kanan ke Kiri)">
                 <svg viewBox="0 0 24 24"><path d="M21 12H3m0 0l6-6m-6 6l6 6"></path></svg>
             </button>
             <button class="icon-btn" id="btn-darkmode" title="Ubah Tema">
                 <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
             </button>
-            <button class="icon-btn" id="btn-fullscreen-header" title="Layar Penuh API">
-                <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
-            </button>
         </div>
     </header>
 
     <div class="progress-container"><div class="progress-bar" id="reading-progress"></div></div>
 
-    <!-- Area ini murni untuk deteksi sentuhan Immersive -->
+    <!-- AREA BACA -->
     <div class="reader-area" id="reader-area">
         <div class="book-container" id="flipbook">
             <div class="page">Sampul Depan</div>
@@ -149,7 +133,7 @@
         </div>
     </div>
 
-    <!-- Desain Bottom Nav yang Lebih Padat untuk HP -->
+    <!-- BOTTOM NAV TETAP STABIL DI BAWAH -->
     <div class="bottom-nav">
         <button class="nav-btn" id="btn-prev"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
         <div class="page-info" id="info-halaman">0 / 5</div>
@@ -179,7 +163,7 @@
             const totalHalaman = pages.length - 1;
             const infoHalaman = document.getElementById('info-halaman');
             const progressBar = document.getElementById('reading-progress');
-            let isMangaMode = false; // Mode Manga Off by default
+            let isMangaMode = false;
 
             // SETUP FLIPBOOK
             const pageFlip = new St.PageFlip(document.getElementById('flipbook'), {
@@ -189,68 +173,44 @@
             });
             pageFlip.loadFromHTML(pages);
 
-            // LOGIKA UPDATE HALAMAN & HAPTIC FEEDBACK
+            // LOGIKA UPDATE HALAMAN
             pageFlip.on('flip', (e) => {
                 infoHalaman.innerText = `${e.data} / ${totalHalaman}`;
                 progressBar.style.width = ((e.data / totalHalaman) * 100) + '%';
                 
-                // Haptic Feedback (Getar HP) jika didukung browser
-                if (navigator.vibrate) navigator.vibrate(30);
+                // Haptic feedback halus
+                if (navigator.vibrate) navigator.vibrate(25);
 
-                // Auto-Hide UI saat membaca untuk fokus
-                document.body.classList.add('ui-hidden');
-
-                // Update Modal
                 document.querySelectorAll('.btn-angka').forEach(btn => btn.classList.remove('active'));
                 const activeBtn = document.getElementById(`btn-hal-${e.data}`);
                 if(activeBtn) activeBtn.classList.add('active');
             });
 
-            // LOGIKA KETUK LAYAR CERDAS
+            // KETUK SISI KIRI / KANAN UNTUK NAVIGASI (Tanpa auto-hide UI)
             document.getElementById('reader-area').addEventListener('click', (e) => {
                 if (e.target.closest('button') || e.target.closest('.bottom-nav')) return;
 
                 const screenWidth = window.innerWidth;
                 const clickX = e.clientX;
 
-                if (clickX < screenWidth * 0.3) {
-                    // Ketuk Kiri (Jika mode manga, kiri artinya Next)
+                if (clickX < screenWidth * 0.4) {
                     isMangaMode ? pageFlip.flipNext() : pageFlip.flipPrev();
                 } 
-                else if (clickX > screenWidth * 0.7) {
-                    // Ketuk Kanan (Jika mode manga, kanan artinya Prev)
+                else if (clickX > screenWidth * 0.6) {
                     isMangaMode ? pageFlip.flipPrev() : pageFlip.flipNext();
-                } 
-                else {
-                    // Ketuk Tengah -> Munculkan/Sembunyikan UI
-                    document.body.classList.toggle('ui-hidden');
                 }
             });
 
-            // TRUE FULLSCREEN API (Memaksa Browser Hilang URL Bar-nya)
-            document.getElementById('btn-fullscreen-header').addEventListener('click', () => {
-                const elem = document.documentElement;
-                if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-                    if (elem.requestFullscreen) { elem.requestFullscreen(); }
-                    else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(); } // Safari/Chrome Mobile
-                } else {
-                    if (document.exitFullscreen) { document.exitFullscreen(); }
-                    else if (document.webkitExitFullscreen) { document.webkitExitFullscreen(); }
-                }
-                document.body.classList.add('ui-hidden');
-            });
-
-            // TOMBOL NAVIGASI BAWAH 
+            // TOMBOL NAVIGASI BAWAH
             document.getElementById('btn-prev').addEventListener('click', () => isMangaMode ? pageFlip.flipNext() : pageFlip.flipPrev());
             document.getElementById('btn-next').addEventListener('click', () => isMangaMode ? pageFlip.flipPrev() : pageFlip.flipNext());
 
             // MODE MANGA TOGGLE
             const btnRtl = document.getElementById('btn-rtl');
             btnRtl.addEventListener('click', () => {
-                isMangaMode = !isMangaMode;
+                isMangaMode = !isMangaMenu = !isMangaMode;
                 btnRtl.classList.toggle('active');
-                // Beri notifikasi getar panjang
-                if (navigator.vibrate) navigator.vibrate([50, 50, 50]); 
+                if (navigator.vibrate) navigator.vibrate(40);
             });
 
             // MODAL GENERATOR
