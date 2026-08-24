@@ -2,239 +2,413 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atshura Comics - Creator Portal</title>
-    
-    <!-- Font Khas Action/Esports -->
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Atshura Comics - Premium Reader</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* === TEMA: DARK FANTASY & BATTLEFIELD === */
         :root {
-            --bg-dark: #0a0a0a;
-            --bg-darker: #050505;
-            --blood-red: #E11D48;
-            --fire-gold: #F59E0B;
-            --text-main: #FFFFFF;
-            --text-muted: #A1A1AA;
+            --bg-color: #F8FAFC;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --accent: #4F46E5;
+            --shadow-glass: 0 4px 30px rgba(0, 0, 0, 0.08);
+            --like-color: #10B981; 
+            --dislike-color: #EF4444; 
         }
 
-        * {
-            box-sizing: border-box; margin: 0; padding: 0; 
-            font-family: 'Rajdhani', sans-serif;
-            -webkit-tap-highlight-color: transparent;
+        [data-theme="dark"] {
+            --bg-color: #0B0F19;
+            --text-main: #F1F5F9;
+            --text-muted: #94A3B8;
+            --glass-bg: rgba(15, 23, 42, 0.9);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --accent: #6366F1;
         }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
 
         body {
-            background-color: var(--bg-darker);
-            color: var(--text-main);
-            min-height: 100vh; display: flex; justify-content: center; align-items: center;
-            overflow-x: hidden; position: relative;
+            background-color: var(--bg-color); color: var(--text-main);
+            transition: background-color 0.3s ease;
+            height: 100vh; height: 100dvh; display: flex; flex-direction: column; overflow: hidden;
         }
 
-        /* Latar Belakang Vignette (Gelap di tepi, sedikit merah di tengah) */
-        .bg-overlay {
-            position: absolute; inset: 0;
-            background: radial-gradient(circle at center, rgba(225, 29, 72, 0.1) 0%, var(--bg-darker) 70%);
-            z-index: -2;
-        }
-
-        /* Container Partikel Bara Api */
-        #particles-js {
-            position: fixed; width: 100%; height: 100%; top: 0; left: 0;
-            z-index: -1;
-        }
-
-        /* === KARTU UTAMA (SHARP EDGES / RPG STYLE) === */
-        .card-container {
-            position: relative; width: 90%; max-width: 400px;
-            /* Latar Belakang Kartu */
-            background: linear-gradient(135deg, rgba(30,30,30,0.9), rgba(15,15,15,0.95));
-            border: 1px solid rgba(225, 29, 72, 0.3);
-            /* Memotong sudut kanan atas dan kiri bawah agar tajam */
-            clip-path: polygon(0 0, 92% 0, 100% 8%, 100% 100%, 8% 100%, 0 92%);
-            padding: 40px 30px; display: flex; flex-direction: column; align-items: center;
-            box-shadow: 0 20px 50px rgba(225, 29, 72, 0.15);
-            z-index: 10;
-            animation: dropIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-            transform: scale(1.1); opacity: 0;
-        }
-
-        /* Aksen Garis Emas/Merah di Atas Kartu */
-        .card-container::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
-            background: linear-gradient(90deg, var(--blood-red), var(--fire-gold));
-        }
-
-        @keyframes dropIn {
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        /* === FOTO PROFIL (HEXAGON SHAPE) === */
-        .avatar-frame {
-            position: relative; width: 130px; height: 130px; margin-bottom: 20px;
-            display: flex; justify-content: center; align-items: center;
-            /* Bingkai luar heksagon */
-            background: linear-gradient(to bottom right, var(--blood-red), var(--fire-gold));
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            transition: transform 0.4s ease;
-        }
-
-        .avatar-frame:hover {
-            transform: rotate(15deg) scale(1.05);
-        }
-
-        .profile-img {
-            width: 122px; height: 122px; object-fit: cover;
-            /* Potongan heksagon untuk gambar */
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            background-color: var(--bg-dark);
-        }
-
-        /* === TIPOGRAFI / TEKS === */
-        h1 { 
-            font-size: 28px; font-weight: 800; text-transform: uppercase; 
-            letter-spacing: 2px; margin-bottom: 5px; text-shadow: 2px 2px 0px rgba(225, 29, 72, 0.5);
+        /* =========================================
+           UI 1: HALAMAN HOME / LANDING PAGE
+           ========================================= */
+        #home-screen {
+            position: fixed; inset: 0; z-index: 500;
+            background-color: var(--bg-color);
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+            overflow-y: auto; overflow-x: hidden;
+            transition: opacity 0.5s ease, transform 0.5s ease;
         }
         
-        .role-tag {
-            background: var(--blood-red); color: white;
-            font-size: 12px; font-weight: 700; padding: 4px 12px;
-            clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
-            text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 25px;
+        #home-screen.hidden { opacity: 0; pointer-events: none; transform: scale(1.05); }
+
+        /* Latar belakang blur sekarang mengambil gambar dari folder lokal */
+        .home-bg {
+            position: absolute; top: -10%; left: -10%; width: 120%; height: 50%;
+            background: linear-gradient(to bottom, rgba(79, 70, 229, 0.3), var(--bg-color)), url('images/cover.png') center/cover;
+            filter: blur(20px); z-index: 1; opacity: 0.6;
         }
 
-        /* === TOMBOL LINK (SHARP & SLASH EFFECT) === */
-        .link-container { width: 100%; display: flex; flex-direction: column; gap: 14px; }
+        .home-content {
+            position: relative; z-index: 10;
+            width: 100%; max-width: 500px; padding: 40px 20px 60px;
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+        }
+
+        .home-cover {
+            width: 180px; height: 260px; object-fit: cover; border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3); margin-top: 20px; margin-bottom: 24px;
+            border: 2px solid var(--glass-border);
+        }
+
+        .home-title { font-size: 26px; font-weight: 800; margin-bottom: 8px; line-height: 1.2; }
+        .home-author { font-size: 14px; color: var(--text-muted); font-weight: 500; margin-bottom: 16px; }
         
-        .link-btn {
-            position: relative; display: flex; align-items: center; justify-content: center; gap: 12px;
-            width: 100%; padding: 18px 20px; 
-            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.1);
-            font-size: 16px; font-weight: 700; text-decoration: none; color: var(--text-main);
-            text-transform: uppercase; letter-spacing: 1px;
-            /* Sudut terpotong ala Sci-Fi/Fantasy */
-            clip-path: polygon(0 0, 95% 0, 100% 30%, 100% 100%, 5% 100%, 0 70%);
-            transition: all 0.3s ease; overflow: hidden;
+        .home-tags { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
+        .tag { background: rgba(79, 70, 229, 0.1); color: var(--accent); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; border: 1px solid rgba(79, 70, 229, 0.2); }
+        
+        .home-stats { display: flex; gap: 20px; margin-bottom: 30px; font-size: 14px; font-weight: 600; color: var(--text-muted); }
+        .stat-item { display: flex; align-items: center; gap: 6px; }
+
+        .home-actions { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+        .btn-home {
+            width: 100%; padding: 16px; border-radius: 16px; font-size: 15px; font-weight: 600;
+            border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: all 0.2s;
+        }
+        .btn-home-primary { background: var(--accent); color: white; box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3); }
+        .btn-home-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(79, 70, 229, 0.4); }
+        
+        .btn-home-secondary { background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-main); }
+        .btn-home-secondary:hover { background: rgba(128,128,128,0.1); }
+
+        /* =========================================
+           UI 2: APLIKASI PEMBACA (READER)
+           ========================================= */
+        #reader-app {
+            flex-grow: 1; display: flex; flex-direction: column; opacity: 1; transition: opacity 0.5s ease; height: 100%;
         }
 
-        .link-btn svg { width: 22px; height: 22px; fill: currentColor; z-index: 2;}
-        .link-btn span { z-index: 2; }
+        header {
+            width: 100%; background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 20px; box-shadow: var(--shadow-glass); z-index: 100;
+        }
+        .brand { font-weight: 700; font-size: 16px; display: flex; align-items: center; gap: 6px; cursor: pointer;}
+        .brand-badge { background: var(--accent); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; }
+        
+        .header-tools { display: flex; gap: 8px; }
+        .icon-btn {
+            background: transparent; border: 1px solid var(--glass-border); color: var(--text-main);
+            width: 34px; height: 34px; border-radius: 8px; display: flex; justify-content: center; align-items: center; cursor: pointer;
+        }
+        .icon-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 
-        /* Efek Latar Hover */
-        .link-btn::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(225, 29, 72, 0.8), transparent);
-            transition: left 0.4s ease; z-index: 1;
+        .progress-container { width: 100%; height: 2px; background: transparent; }
+        .progress-bar { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s ease; }
+
+        .reader-area { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px 10px 90px 10px; width: 100%; }
+        
+        .book-container { width: 100%; max-width: 500px; background-color: var(--bg-color); margin-bottom: 15px; }
+
+        .page { background-color: #FFF; display: flex; justify-content: center; align-items: center; user-select: none; font-weight: bold; font-size: 18px; color: #888; border: 1px solid #eee;}
+        .page img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+
+        .reaction-container { display: flex; gap: 15px; margin-top: 5px; }
+        .reaction-btn {
+            background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-main);
+            padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; cursor: pointer; backdrop-filter: blur(10px);
+        }
+        .reaction-btn svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        .reaction-btn.liked { color: var(--like-color); border-color: var(--like-color); background: rgba(16, 185, 129, 0.1); }
+        .reaction-btn.liked svg { fill: var(--like-color); }
+        .reaction-btn.disliked { color: var(--dislike-color); border-color: var(--dislike-color); background: rgba(239, 68, 68, 0.1); }
+        .reaction-btn.disliked svg { fill: var(--dislike-color); }
+
+        .bottom-nav {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border); border-radius: 50px;
+            display: flex; align-items: center; justify-content: space-between; padding: 6px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); z-index: 100; width: 90%; max-width: 320px;
         }
 
-        .link-btn:hover {
-            border-color: var(--blood-red);
-            color: white; text-shadow: 0 0 8px rgba(255,255,255,0.5);
-            transform: translateX(5px); /* Bergerak sedikit ke kanan saat disorot */
-        }
-        .link-btn:hover::before { left: 100%; /* Kilatan cahaya bergerak */ }
+        .nav-btn { background: transparent; color: var(--text-main); border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; }
+        .nav-btn.primary { background: var(--accent); color: white; width: auto; padding: 0 16px; border-radius: 20px; font-weight: 600; font-size: 13px; gap: 6px;}
+        .nav-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none; }
+        .page-info { font-size: 13px; font-weight: 600; color: var(--text-main); white-space: nowrap; text-align: center; font-variant-numeric: tabular-nums; }
 
-        /* Tombol Utama (Berdar Merah) */
-        .link-btn.primary {
-            background: rgba(225, 29, 72, 0.15); border-color: var(--blood-red);
-        }
-        .link-btn.primary:hover {
-            background: var(--blood-red);
-        }
-
-        .footer-text { margin-top: 30px; font-size: 12px; color: var(--text-muted); font-weight: 600; letter-spacing: 1px; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: flex-end; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 1000; }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-content { background: var(--bg-color); color: var(--text-main); width: 100%; max-width: 500px; padding: 24px; border-radius: 20px 20px 0 0; transform: translateY(100%); transition: transform 0.3s; max-height: 80vh; overflow-y: auto;}
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        .grid-halaman { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 15px;}
+        .btn-angka { background: transparent; border: 1px solid var(--glass-border); color: var(--text-main); padding: 10px 0; border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 14px;}
+        .btn-angka.active { background: var(--accent); color: white; border-color: var(--accent); }
+        
+        .synopsis-text { margin-top: 15px; font-size: 14px; line-height: 1.6; color: var(--text-muted); text-align: justify; }
     </style>
 </head>
 <body>
 
-    <div class="bg-overlay"></div>
-    
-    <!-- Partikel Bara Api (Diatur via JavaScript di bawah) -->
-    <div id="particles-js"></div>
+    <!-- =========================================
+         LAYAR HOME / LANDING PAGE
+         ========================================= -->
+    <div id="home-screen">
+        <div class="home-bg"></div>
+        <div class="home-content">
+            <!-- Gambar Cover kini mengambil dari folder 'images' -->
+            <img src="images/cover.png" alt="Cover Komik" class="home-cover">
+            
+            <h1 class="home-title">Atshura: Sang Penguasa</h1>
+            <p class="home-author">Karya: Cendikia Titan Aulia Pujiono</p>
+            
+            <div class="home-tags">
+                <span class="tag">Action</span>
+                <span class="tag">Fantasy</span>
+                <span class="tag">Shounen</span>
+            </div>
+            
+            <div class="home-stats">
+                <div class="stat-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> 4.9 Rating</div>
+                <div class="stat-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg> 1.2M Views</div>
+            </div>
 
-    <!-- Kartu dengan efek melayang 3D tipis -->
-    <div class="card-container" data-tilt data-tilt-max="5" data-tilt-speed="400">
-        
-        <!-- Frame Hexagon Foto Profil -->
-        <div class="avatar-frame">
-            <img src="profil.jpg" alt="Profile" class="profile-img">
-        </div>
-        
-        <h1>Atshura</h1>
-        <div class="role-tag">Creator & Webtoonist</div>
-
-        <div class="link-container">
-            <!-- Tombol 1: Baca Komik -->
-            <a href="https://revianchim.me" class="link-btn primary" target="_blank">
-                <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
-                <span>Baca Komik Utama</span>
-            </a>
-
-            <!-- Tombol 2: Google Drive -->
-            <a href="#" class="link-btn" target="_blank">
-                <svg viewBox="0 0 24 24"><path d="M21.16 11.23H13a.75.75 0 0 0-.65 1.13l4.08 7.07a.75.75 0 0 0 .65.37h8.16a.75.75 0 0 0 .65-1.12l-4.08-7.07a.75.75 0 0 0-.65-.38z"></path><path d="M11.66 11.23H3.5a.75.75 0 0 0-.65.38L1.33 14.1a.75.75 0 0 0 0 .75l4.08 7.07a.75.75 0 0 0 .65.37h8.16a.75.75 0 0 0 .65-1.12l-4.08-7.07a.75.75 0 0 0-.65-.38l-4.08-7.07a.75.75 0 0 0-.65-.37z"></path><path d="M12.65 9.77l-4.08-7.07A.75.75 0 0 0 7.92 2H2.33a.75.75 0 0 0-.65 1.13L11.35 19.8a.75.75 0 0 0 1.3 0l4.08-7.07a.75.75 0 0 0 0-.75l-4.08-7.07a.75.75 0 0 0-.65-.38z"></path></svg>
-                <span>Arsip Google Drive</span>
-            </a>
-
-            <!-- Tombol 3: Dukungan / Info Tambahan -->
-            <a href="#" class="link-btn" target="_blank">
-                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                <span>Dukung Kreator</span>
-            </a>
-        </div>
-
-        <div class="footer-text">
-            © 2026 ATSHURA COMICS
+            <div class="home-actions">
+                <button class="btn-home btn-home-primary" id="btn-start-read">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                    Mulai Membaca
+                </button>
+                <button class="btn-home btn-home-secondary" id="btn-show-synopsis">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    Baca Sinopsis
+                </button>
+                <button class="btn-home btn-home-secondary" id="btn-share-home">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                    Bagikan Komik
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- PUSTAKA ANIMASI -->
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+    <!-- =========================================
+         APLIKASI PEMBACA (READER)
+         ========================================= -->
+    <div id="reader-app">
+        <header>
+            <div class="brand" id="btn-back-home" title="Kembali ke Beranda">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                Atshura <span class="brand-badge">PRO</span>
+            </div>
+            <div class="header-tools">
+                <button class="icon-btn" id="btn-darkmode" title="Ubah Tema">
+                    <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                </button>
+                <button class="icon-btn" id="btn-fullscreen" title="Layar Penuh Website">
+                    <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                </button>
+            </div>
+        </header>
 
-    <!-- KONFIGURASI BARA API MELAYANG (FIRE EMBERS) -->
+        <div class="progress-container"><div class="progress-bar" id="reading-progress"></div></div>
+
+        <div class="reader-area" id="reader-area">
+            <div class="book-container" id="flipbook">
+                <!-- Anda juga bisa mengganti teks ini dengan tag <img src="images/halaman-1.jpg"> nantinya -->
+                <div class="page">Sampul Depan</div>
+                <div class="page">Hal 1</div>
+                <div class="page">Hal 2</div>
+                <div class="page">Hal 3</div>
+                <div class="page">Hal 4</div>
+                <div class="page">Sampul Belakang</div>
+            </div>
+
+            <div class="reaction-container">
+                <button class="reaction-btn" id="btn-like">
+                    <svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+                    <span id="like-count">124</span>
+                </button>
+                <button class="reaction-btn" id="btn-dislike">
+                    <svg viewBox="0 0 24 24"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"></path></svg>
+                    <span id="dislike-count">3</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <button class="nav-btn" id="btn-prev"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+            <div class="page-info" id="info-halaman">0 / 5</div>
+            <button class="nav-btn primary" id="btn-buka">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                Bab
+            </button>
+            <button class="nav-btn" id="btn-next"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+        </div>
+    </div>
+
+    <!-- =========================================
+         MODAL POP-UPS
+         ========================================= -->
+    <div class="modal-overlay" id="modal-halaman">
+        <div class="modal-content">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="font-size: 16px;">Daftar Halaman</h3>
+                <button class="icon-btn close-modal" style="border:none; background:transparent;">
+                    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="grid-halaman" id="grid-angka"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-sinopsis">
+        <div class="modal-content">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="font-size: 16px;">Sinopsis Cerita</h3>
+                <button class="icon-btn close-modal" style="border:none; background:transparent;">
+                    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="synopsis-text">
+                <p>Di dunia di mana kekuatan sihir menentukan kasta seseorang, Atshura lahir tanpa sihir sedikit pun. Diasingkan dan diremehkan, ia menemukan sebuah artefak kuno yang memberinya kekuatan fisik di luar nalar.</p>
+                <br>
+                <p>Kini, Atshura memulai perjalanannya untuk menghancurkan sistem kasta yang korup dan membuktikan bahwa kekuatan sejati bukan hanya berasal dari sihir.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            particlesJS("particles-js", {
-                "particles": {
-                    "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
-                    "color": { "value": ["#E11D48", "#F59E0B"] }, /* Warna partikel Merah dan Emas */
-                    "shape": { "type": "circle" },
-                    "opacity": { 
-                        "value": 0.8, 
-                        "random": true, 
-                        "anim": { "enable": true, "speed": 1, "opacity_min": 0.1, "sync": false }
-                    },
-                    "size": { 
-                        "value": 4, 
-                        "random": true,
-                        "anim": { "enable": true, "speed": 2, "size_min": 0.1, "sync": false }
-                    },
-                    "line_linked": { "enable": false }, /* Menghilangkan jaring rasi bintang */
-                    "move": {
-                        "enable": true,
-                        "speed": 2,
-                        "direction": "top", /* Bara api terbang ke atas */
-                        "random": true,
-                        "straight": false,
-                        "out_mode": "out",
-                        "bounce": false,
-                    }
-                },
-                "interactivity": {
-                    "detect_on": "canvas",
-                    "events": {
-                        "onhover": { "enable": true, "mode": "repulse" }, /* Bara api menghindar jika disentuh */
-                        "onclick": { "enable": true, "mode": "push" }, /* Muncul bara api baru saat diklik */
-                        "resize": true
-                    },
-                    "modes": {
-                        "repulse": { "distance": 100, "duration": 0.4 },
-                        "push": { "particles_nb": 4 }
-                    }
-                },
-                "retina_detect": true
+            // --- LOGIKA HOME SCREEN ---
+            const homeScreen = document.getElementById('home-screen');
+            const btnStartRead = document.getElementById('btn-start-read');
+            const btnBackHome = document.getElementById('btn-back-home');
+            
+            btnStartRead.addEventListener('click', () => {
+                homeScreen.classList.add('hidden');
+                window.scrollTo(0, 0);
+            });
+
+            btnBackHome.addEventListener('click', () => {
+                homeScreen.classList.remove('hidden');
+            });
+
+            document.getElementById('btn-share-home').addEventListener('click', async () => {
+                if (navigator.share) {
+                    try { await navigator.share({ title: 'Atshura Comics', text: 'Baca komik seru terbaru ini!', url: window.location.href }); } 
+                    catch (err) {}
+                } else { alert("Salin link ini: " + window.location.href); }
+            });
+
+            // --- SETUP FLIPBOOK ---
+            const pages = document.querySelectorAll('.page');
+            const totalHalaman = pages.length - 1;
+            const infoHalaman = document.getElementById('info-halaman');
+            const progressBar = document.getElementById('reading-progress');
+
+            const pageFlip = new St.PageFlip(document.getElementById('flipbook'), {
+                width: 400, height: 600, size: "stretch", 
+                minWidth: 250, maxWidth: 1000, minHeight: 400, maxHeight: 1500,
+                showCover: true, usePortrait: true, mobileScrollSupport: false 
+            });
+            pageFlip.loadFromHTML(pages);
+
+            pageFlip.on('flip', (e) => {
+                infoHalaman.innerText = `${e.data} / ${totalHalaman}`;
+                progressBar.style.width = ((e.data / totalHalaman) * 100) + '%';
+                if (navigator.vibrate) navigator.vibrate(25);
+
+                document.querySelectorAll('.btn-angka').forEach(btn => btn.classList.remove('active'));
+                const activeBtn = document.getElementById(`btn-hal-${e.data}`);
+                if(activeBtn) activeBtn.classList.add('active');
+            });
+
+            document.getElementById('reader-area').addEventListener('click', (e) => {
+                if (e.target.closest('button') || e.target.closest('.bottom-nav')) return;
+                const clickX = e.clientX;
+                if (clickX < window.innerWidth * 0.4) { pageFlip.flipPrev(); } 
+                else if (clickX > window.innerWidth * 0.6) { pageFlip.flipNext(); }
+            });
+
+            document.getElementById('btn-prev').addEventListener('click', () => pageFlip.flipPrev());
+            document.getElementById('btn-next').addEventListener('click', () => pageFlip.flipNext());
+
+            // --- LIKE / DISLIKE ---
+            const btnLike = document.getElementById('btn-like');
+            const btnDislike = document.getElementById('btn-dislike');
+            const likeCountSpan = document.getElementById('like-count');
+            const dislikeCountSpan = document.getElementById('dislike-count');
+
+            let likes = 124; let dislikes = 3;
+            let userReaction = localStorage.getItem('atshura_reaction') || null;
+
+            if (userReaction === 'like') btnLike.classList.add('liked');
+            else if (userReaction === 'dislike') btnDislike.classList.add('disliked');
+
+            btnLike.addEventListener('click', () => {
+                if (userReaction === 'like') { likes--; userReaction = null; btnLike.classList.remove('liked'); } 
+                else {
+                    if (userReaction === 'dislike') { dislikes--; btnDislike.classList.remove('disliked'); }
+                    likes++; userReaction = 'like'; btnLike.classList.add('liked');
+                }
+                likeCountSpan.innerText = likes; dislikeCountSpan.innerText = dislikes;
+                localStorage.setItem('atshura_reaction', userReaction);
+            });
+
+            btnDislike.addEventListener('click', () => {
+                if (userReaction === 'dislike') { dislikes--; userReaction = null; btnDislike.classList.remove('disliked'); } 
+                else {
+                    if (userReaction === 'like') { likes--; btnLike.classList.remove('liked'); }
+                    dislikes++; userReaction = 'dislike'; btnDislike.classList.add('disliked');
+                }
+                likeCountSpan.innerText = likes; dislikeCountSpan.innerText = dislikes;
+                localStorage.setItem('atshura_reaction', userReaction);
+            });
+
+            // --- MODALS ---
+            const modalHalaman = document.getElementById('modal-halaman');
+            const modalSinopsis = document.getElementById('modal-sinopsis');
+            
+            const gridAngka = document.getElementById('grid-angka');
+            for (let i = 0; i <= totalHalaman; i++) {
+                let btn = document.createElement('button');
+                btn.classList.add('btn-angka');
+                btn.id = `btn-hal-${i}`; btn.innerText = i;
+                btn.addEventListener('click', () => { pageFlip.flip(i); modalHalaman.classList.remove('active'); });
+                gridAngka.appendChild(btn);
+            }
+            
+            document.getElementById('btn-buka').addEventListener('click', () => modalHalaman.classList.add('active'));
+            document.getElementById('btn-show-synopsis').addEventListener('click', () => modalSinopsis.classList.add('active'));
+            
+            document.querySelectorAll('.close-modal').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.target.closest('.modal-overlay').classList.remove('active');
+                });
+            });
+
+            // --- FITUR HEADER ---
+            document.getElementById('btn-fullscreen').addEventListener('click', () => {
+                if (!document.fullscreenElement) { document.documentElement.requestFullscreen().catch(err => console.log(err)); } 
+                else { document.exitFullscreen(); }
+            });
+
+            const btnDark = document.getElementById('btn-darkmode');
+            if(localStorage.getItem('atshura_theme') === 'dark') document.body.setAttribute('data-theme', 'dark');
+
+            btnDark.addEventListener('click', () => {
+                if(document.body.getAttribute('data-theme') === 'dark') {
+                    document.body.removeAttribute('data-theme'); localStorage.setItem('atshura_theme', 'light');
+                } else {
+                    document.body.setAttribute('data-theme', 'dark'); localStorage.setItem('atshura_theme', 'dark');
+                }
             });
         });
     </script>
