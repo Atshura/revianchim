@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Atshura Comics - Premium Reader</title>
+    <title>Abyss - Premium Reader</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
@@ -204,7 +204,7 @@
         <header>
             <div class="brand" id="btn-back-home" title="Kembali ke Beranda">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                Atshura <span class="brand-badge">PRO</span>
+                ABYSS <span class="brand-badge">PRO</span>
             </div>
             <div class="header-tools">
                 <button class="icon-btn" id="btn-darkmode" title="Ubah Tema">
@@ -220,25 +220,27 @@
 
         <div class="reader-area" id="reader-area">
             <div class="book-container" id="flipbook">
-                <!-- Anda juga bisa mengganti teks ini dengan tag <img src="images/halaman-1.jpg"> nantinya -->
-                <div class="page">Sampul Depan</div>
-                <div class="page">Hal 1</div>
-                <div class="page">Hal 2</div>
-                <div class="page">Hal 3</div>
-                <div class="page">Hal 4</div>
-                <div class="page">Hal 5</div>
-                <div class="page">Hal 6</div>
-                <div class="page">Hal 7</div>
-                <div class="page">Hal 8</div>
-                <div class="page">Hal 9</div>
-                <div class="page">Hal 10</div>
-                <div class="page">Hal 11</div>
-                <div class="page">Hal 12</div>
-                <div class="page">Hal 13</div>
-                <div class="page">Hal 14</div>
-                <div class="page">Hal 15</div>
-                <div class="page">Hal 16</div>
-                <div class="page">Sampul Belakang</div>
+                <!-- ==========================================
+                     AREA HALAMAN KOMIK (SUDAH DIUBAH KE GAMBAR PNG)
+                     ========================================== -->
+                <div class="page"><img src="images/cover.png" alt="Sampul Depan"></div>
+                <div class="page"><img src="images/hal1.png" alt="Halaman 1"></div>
+                <div class="page"><img src="images/hal2.png" alt="Halaman 2"></div>
+                <div class="page"><img src="images/hal3.png" alt="Halaman 3"></div>
+                <div class="page"><img src="images/hal4.png" alt="Halaman 4"></div>
+                <div class="page"><img src="images/hal5.png" alt="Halaman 5"></div>
+                <div class="page"><img src="images/hal6.png" alt="Halaman 6"></div>
+                <div class="page"><img src="images/hal7.png" alt="Halaman 7"></div>
+                <div class="page"><img src="images/hal8.png" alt="Halaman 8"></div>
+                <div class="page"><img src="images/hal9.png" alt="Halaman 9"></div>
+                <div class="page"><img src="images/hal10.png" alt="Halaman 10"></div>
+                <div class="page"><img src="images/hal11.png" alt="Halaman 11"></div>
+                <div class="page"><img src="images/hal12.png" alt="Halaman 12"></div>
+                <div class="page"><img src="images/hal13.png" alt="Halaman 13"></div>
+                <div class="page"><img src="images/hal14.png" alt="Halaman 14"></div>
+                <div class="page"><img src="images/hal15.png" alt="Halaman 15"></div>
+                <div class="page"><img src="images/hal16.png" alt="Halaman 16"></div>
+                <div class="page"><img src="images/cover_belakang.png" alt="Sampul Belakang"></div>
             </div>
 
             <div class="reaction-container">
@@ -255,7 +257,7 @@
 
         <div class="bottom-nav">
             <button class="nav-btn" id="btn-prev"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
-            <div class="page-info" id="info-halaman">0 / 5</div>
+            <div class="page-info" id="info-halaman">0 / 17</div>
             <button class="nav-btn primary" id="btn-buka">
                 <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
                 Bab
@@ -318,7 +320,7 @@ Namun, ketenangan itu berubah ketika tingkat kriminalitas tiba-tiba mengalami pe
 
             document.getElementById('btn-share-home').addEventListener('click', async () => {
                 if (navigator.share) {
-                    try { await navigator.share({ title: 'Atshura Comics', text: 'Baca komik seru terbaru ini!', url: window.location.href }); } 
+                    try { await navigator.share({ title: 'Abyss Comics', text: 'Baca komik seru terbaru ini!', url: window.location.href }); } 
                     catch (err) {}
                 } else { alert("Salin link ini: " + window.location.href); }
             });
@@ -362,7 +364,7 @@ Namun, ketenangan itu berubah ketika tingkat kriminalitas tiba-tiba mengalami pe
             const likeCountSpan = document.getElementById('like-count');
             const dislikeCountSpan = document.getElementById('dislike-count');
 
-            let likes = 124; let dislikes = 3;
+            let likes = 0; let dislikes = 3;
             let userReaction = localStorage.getItem('atshura_reaction') || null;
 
             if (userReaction === 'like') btnLike.classList.add('liked');
